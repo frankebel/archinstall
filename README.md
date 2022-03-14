@@ -1,2 +1,2 @@
 # archinstall
-My Script for installing Arch Linux
+My Script for installing Arch Linux.
