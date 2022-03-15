@@ -2,7 +2,7 @@
 printf 'On which drive do you want to install Arch Linux?\n'
 lsblk -d
 
-drive_default="$(lsblk -d | awk '{print $1}' | sed -n '2p')"
+drive_default="$(lsblk -d | grep -E '^nvme|^sd' | awk '{print $1}' | head -n 1)"
 printf "Please choose a drive: [%s] " "$drive_default" 
 read -r drive
 drive="${drive:-$drive_default}"
