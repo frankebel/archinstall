@@ -1,6 +1,15 @@
 #!/bin/sh
 
 ls /sys/firmware/efi/efivars
+printf '\nDid you get any output? [y/n]: '
+read -r yn
+case "$yn" in
+	[nN]* )
+		printf 'You are not booted in UEFI mode. Script will exit.\n'
+		exit 0
+		;;
+esac
+unset yn
 timedatectl set-ntp true
 
 # Partition the disks
