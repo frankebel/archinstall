@@ -1,17 +1,11 @@
 #!/bin/sh
 
-ls /sys/firmware/efi/efivars
-printf '\nDid you get any output? [y/n]: '
-read -r yn
-case "$yn" in
-	[yY]* )
-		;;
-	* )
-		printf 'You are not booted in UEFI mode. Script will exit.\n'
-		exit 0
-		;;
-esac
-unset yn
+# Verify the boot mode
+if ! [ -d /sys/firmware/efi/efivars ]; then
+	printf 'You are not in UEFI mode. Script will exit\n'
+	exit
+fi
+
 timedatectl set-ntp true
 
 # Partition the disks
@@ -24,7 +18,7 @@ read -r drive
 drive="${drive:-$drive_default}"
 
 
-printf "\nThis will create 2 partitions on /dev/%s.\nPartition 1 will be of size 512M and type 'EFI System'.\nPartition 2 will take the rest and be of type 'Linux Filesystem'.\nYou will lose all data on /dev/%s. Are you sure you want to continue? [y/N] " "$drive" "$drive"
+printf "\nThis will create 2 partitions on /dev/%s.\nPartition 1 will be of size 512M and type 'EFI System'.\nPartition 2 will take the rest and be of type 'Linux Filesystem'.\nYou will lose all data on /dev/%s. Are you sure? [y/N] " "$drive" "$drive"
 read -r yn
 yn="${yn:-n}"
 case "$yn" in
