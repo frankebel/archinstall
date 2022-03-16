@@ -87,7 +87,7 @@ read -r yn
 yn="${yn:-y}"
 case "$yn" in
 	[yY]* )
-		cp /etc/pacman.d/mirrorlist /etc/paman.d/mirrorlist.old
+		cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.old
 		reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist
 		;;
 esac
