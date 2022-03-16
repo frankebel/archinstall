@@ -40,3 +40,43 @@ case "$yn" in
 		;;
 esac
 unset yn
+
+
+# Format the partitions
+printf "Do you want to format the partitions? Only enter 'y' if you partitioned a drive in the first step. [y/N] "
+read -r yn
+case "$yn" in
+	[yY]* )
+		mkfs.fat -F 32 /dev/"${drive}1"
+		mkfs.ext4 /dev/"${drive}2"
+		;;
+esac
+unset yn
+
+
+# Mount the file systems
+printf "Do you want to mount the partitions? Only enter 'y' if you partitioned a drive in the first step. [y/N] "
+read -r yn
+case "$yn" in
+	[yY]* )
+		mount /dev/"${drive}2" /mnt
+		mkdir /mnt/boot
+		mount /dev/"${drive}1" /mnt/boot
+		;;
+esac
+unset yn
+
+# Swap file
+printf "Do you want to create a swap file? Enter size in M (0 for none): [2048] "
+read -r swap_size
+swap_size="${swap_size:-2048}"
+case "$swap_size" in
+	0 )
+		;;
+	^[0-9]+$ )
+		dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size"
+		chmod 600 /mnt/swapfile
+		mkswap /mnt/swapfile
+		swapon /mnt/swapfile
+		;;
+esac
