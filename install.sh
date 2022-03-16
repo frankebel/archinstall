@@ -80,3 +80,17 @@ case "$swap_size" in
 		swapon /mnt/swapfile
 		;;
 esac
+
+# Installation
+printf 'Do you want to update the mirrorlist? (This may take a while) [Y/n] '
+read -r yn
+yn="${yn:-y}"
+case "$yn" in
+	[yY]* )
+		cp /etc/pacman.d/mirrorlist /etc/paman.d/mirrorlist.old
+		reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist
+		;;
+esac
+unset yn
+
+
