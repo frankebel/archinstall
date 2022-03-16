@@ -68,18 +68,22 @@ unset yn
 
 # Swap file
 printf "Do you want to create a swap file? Enter size in M (0 for none): [2048] "
-read -r swap_size
-swap_size="${swap_size:-2048}"
-case "$swap_size" in
-	0 )
-		;;
-	^[0-9]+$ )
-		dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size"
-		chmod 600 /mnt/swapfile
-		mkswap /mnt/swapfile
-		swapon /mnt/swapfile
-		;;
-esac
+while true; do
+	read -r swap_size
+	swap_size="${swap_size:-2048}"
+	if [ "$swap_size" -ge 0 ]; then
+		break
+	else
+		printf "Please enter a number: [2048] "
+	fi
+done
+
+if [ "$swap_size" -gt 0 ]; then
+	dd if=/dev/zero of=/mnt/swapfile bs=1M count="$swap_size"
+	chmod 600 /mnt/swapfile
+	mkswap /mnt/swapfile
+	swapon /mnt/swapfile
+fi
 
 # Installation
 printf 'Do you want to update the mirrorlist? (This may take a while) [Y/n] '
