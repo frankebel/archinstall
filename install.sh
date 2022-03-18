@@ -1,5 +1,9 @@
 #!/bin/sh
 
+arch_chroot_bash() {
+	arch-chroot "/dev/$drive" /bin/bash -c "${1}"
+}
+
 # Verify the boot mode
 if ! [ -d /sys/firmware/efi/efivars ]; then
 	printf 'You are not in UEFI mode. Script will exit\n'
@@ -101,7 +105,6 @@ pacstrap /mnt base linux linux-firmware neovim
 
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
-arch-chroot /mnt
 
 printf "Select timezone (Enter for list): [Europe/Vienna] "
 read -r timezone
@@ -135,15 +138,15 @@ while true; do
 done
 unset yn
 
-ls -sf "/usr/share/zoneinfo/$timezone" /etc/localtime
-hwclock --systohc
+arch_chroot_bash "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
+arch_chroot_bash "hwclock --systohc"
 
 # Localization
 localization='en_US.UTF-8 UTF-8'
-sed -i "s/^#$localization/$localization/" /etc/locale.gen
-locale-gen
-echo 'LANG=en_US.UTF-8' >> /etc/locale.conf
-echo 'KEYMAP=colemak' >> /etc/vconsole.conf
+arch_chroot_bash "sed -i 's/^#$localization/$localization/' /etc/locale.gen"
+arch_chroot_bash "locale-gen"
+arch_chroot_bash "echo 'LANG=en_US.UTF-8' >> /etc/locale.conf"
+arch_chroot_bash "echo 'KEYMAP=colemak' >> /etc/vconsole.conf"
 
 # Network configuration
 printf 'Enter hostname: '
@@ -160,14 +163,14 @@ while true; do
 done
 unset yn
 
-echo "$hostname" > /etc/hostname
-pacman -S --noconfirm networkmanager
-systemctl enable --now NetworkManager
+arch_chroot_bash "echo $hostname > /etc/hostname"
+arch_chroot_bash "pacman -S --noconfirm networkmanager"
+arch_chroot_bash "systemctl enable --now NetworkManager"
 
-printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /etc/hosts
+arch_chroot_bash "printf '127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n' '$hostname' > /etc/hosts"
 
 # Initramfs
-mkinitcpio -P
+arch_chroot_bash "mkinitcpio -P"
 
 # Root password
 while true; do
@@ -180,7 +183,7 @@ while true; do
 	fi
 done
 unset pwd_root2
-printf "%s\n%s" "$pwd_root" "$pwd_root" | passwd root
+arch_chroot_bash "printf '%s\n%s' '$pwd_root' '$pwd_root' | passwd root"
 
 # Boot loader
 case "$(lscpu | grep 'Vendor ID')" in
@@ -195,12 +198,12 @@ case "$(lscpu | grep 'Vendor ID')" in
 		exit
 		;;
 esac
-pacman -S "$microcode" grub efibootmgr
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-grub-mkconfig -o /boot/grub/grub.cfg
+arch_chroot_bash "pacman -S $microcode grub efibootmgr"
+arch_chroot_bash "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
+arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # Reboot
-exit
 umount -R /mnt
 
 printf 'Installation is done\n'
+
