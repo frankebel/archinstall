@@ -146,7 +146,26 @@ localization='en_US.UTF-8 UTF-8'
 arch_chroot_bash "sed -i 's/^#$localization/$localization/' /etc/locale.gen"
 arch_chroot_bash "locale-gen"
 arch_chroot_bash "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
-arch_chroot_bash "echo 'KEYMAP=colemak' > /etc/vconsole.conf"
+printf 'Keyboard layouts:\n1) colemak\n2) de-latin1\n3) us\n'
+while true; do
+	printf 'Choose a layout: '
+	read -r keyboard_layout
+	case "$keyboard_layout" in
+		1 )
+			arch_chroot_bash "echo 'KEYMAP=colemak' > /etc/vconsole.conf"
+			break
+			;;
+		2 )
+			arch_chroot_bash "echo 'KEYMAP=de-latin1' > /etc/vconsole.conf"
+			break
+			;;
+		3 )
+			arch_chroot_bash "echo 'KEYMAP=us' > /etc/vconsole.conf"
+			break
+			;;
+	esac
+done
+unset yn
 
 # Network configuration
 printf 'Enter hostname: '
@@ -174,16 +193,47 @@ arch_chroot_bash "mkinitcpio -P"
 
 # Root password
 while true; do
+	stty -echo
 	printf 'Enter root password: '
 	read -r pwd_root
 	printf "Please enter again: "
 	read -r pwd_root2
 	if [ "$pwd_root" = "$pwd_root2" ]; then
+		stty echo
 		break
 	fi
 done
 unset pwd_root2
 arch_chroot_bash "printf '%s\n%s' '$pwd_root' '$pwd_root' | passwd root"
+
+# add user
+printf 'Add regular user: '
+read -r user
+while true; do
+	printf "Is this username correct? %s [y/N] " "$user"
+	read -r yn
+	yn="${yn:-n}"
+	case "$yn" in
+		[yY]* )
+			break
+			;;
+	esac
+done
+unset yn
+arch_chroot_bash "useradd -m $user"
+while true; do
+	stty -echo
+	printf 'Enter user password: '
+	read -r pwd_user
+	printf "Please user again: "
+	read -r pwd_user2
+	if [ "$pwd_user" = "$pwd_user" ]; then
+		stty echo
+		break
+	fi
+done
+unset pwd_user
+arch_chroot_bash "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
 
 # Boot loader
 case "$(lscpu | grep 'Vendor ID')" in
@@ -198,7 +248,7 @@ case "$(lscpu | grep 'Vendor ID')" in
 		exit
 		;;
 esac
-arch_chroot_bash "pacman -S $microcode grub efibootmgr"
+arch_chroot_bash "pacman -S --noconfirm $microcode grub efibootmgr"
 arch_chroot_bash "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
 arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
 
