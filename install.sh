@@ -1,7 +1,7 @@
 #!/bin/sh
 
 arch_chroot_bash() {
-	arch-chroot "/dev/$drive" /bin/bash -c "${1}"
+	arch-chroot /mnt /bin/bash -c "${1}"
 }
 
 # Verify the boot mode
@@ -145,8 +145,8 @@ arch_chroot_bash "hwclock --systohc"
 localization='en_US.UTF-8 UTF-8'
 arch_chroot_bash "sed -i 's/^#$localization/$localization/' /etc/locale.gen"
 arch_chroot_bash "locale-gen"
-arch_chroot_bash "echo 'LANG=en_US.UTF-8' >> /etc/locale.conf"
-arch_chroot_bash "echo 'KEYMAP=colemak' >> /etc/vconsole.conf"
+arch_chroot_bash "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
+arch_chroot_bash "echo 'KEYMAP=colemak' > /etc/vconsole.conf"
 
 # Network configuration
 printf 'Enter hostname: '
@@ -203,7 +203,7 @@ arch_chroot_bash "grub-install --target=x86_64-efi --efi-directory=/boot --bootl
 arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # Reboot
+swapoff /mnt/swapfile
 umount -R /mnt
 
 printf 'Installation is done\n'
-
