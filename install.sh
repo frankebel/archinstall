@@ -142,30 +142,30 @@ arch_chroot_bash "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
 arch_chroot_bash "hwclock --systohc"
 
 # Localization
-localization='en_US.UTF-8 UTF-8'
-arch_chroot_bash "sed -i 's/^#$localization/$localization/' /etc/locale.gen"
+sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
 arch_chroot_bash "locale-gen"
-arch_chroot_bash "echo 'LANG=en_US.UTF-8' > /etc/locale.conf"
+echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
 printf 'Keyboard layouts:\n1) colemak\n2) de-latin1\n3) us\n'
 while true; do
 	printf 'Choose a layout: '
 	read -r keyboard_layout
 	case "$keyboard_layout" in
 		1 )
-			arch_chroot_bash "echo 'KEYMAP=colemak' > /etc/vconsole.conf"
+			keymap='colemak'
 			break
 			;;
 		2 )
-			arch_chroot_bash "echo 'KEYMAP=de-latin1' > /etc/vconsole.conf"
+			keymap='de-latin1'
 			break
 			;;
 		3 )
-			arch_chroot_bash "echo 'KEYMAP=us' > /etc/vconsole.conf"
+			keymap='us'
 			break
 			;;
 	esac
 done
 unset yn
+echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 
 # Network configuration
 printf 'Enter hostname: '
@@ -182,11 +182,11 @@ while true; do
 done
 unset yn
 
-arch_chroot_bash "echo $hostname > /etc/hostname"
+echo "$hostname" > /mnt/etc/hostname
 arch_chroot_bash "pacman -S --noconfirm networkmanager"
 arch_chroot_bash "systemctl enable --now NetworkManager"
 
-arch_chroot_bash "printf '127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n' '$hostname' > /etc/hosts"
+printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /mnt/etc/hosts
 
 # Initramfs
 arch_chroot_bash "mkinitcpio -P"
@@ -227,12 +227,12 @@ while true; do
 	read -r pwd_user
 	printf "Please user again: "
 	read -r pwd_user2
-	if [ "$pwd_user" = "$pwd_user" ]; then
+	if [ "$pwd_user" = "$pwd_user2" ]; then
 		stty echo
 		break
 	fi
 done
-unset pwd_user
+unset pwd_user2
 arch_chroot_bash "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
 
 # Boot loader
