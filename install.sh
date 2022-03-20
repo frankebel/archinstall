@@ -106,9 +106,8 @@ pacstrap /mnt base linux linux-firmware
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
 
-printf "Select timezone (Enter for list): [Europe/Vienna] "
+printf "Select timezone (Enter for list): "
 read -r timezone
-timezone="${timezone:-Europe/Vienna}"
 region=""
 while true; do
 	if [ -f "/usr/share/zoneinfo/$timezone" ]; then
@@ -164,7 +163,6 @@ while true; do
 			;;
 	esac
 done
-unset yn
 echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 
 # Network configuration
@@ -256,8 +254,30 @@ arch_chroot_bash "pacman -S --noconfirm $microcode grub efibootmgr"
 arch_chroot_bash "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
 arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
 
+# add text editor
+printf 'Text Editor:\n1) nano\n2) neovim\n3) vim\n'
+while true; do
+	printf 'Choose a layout: '
+	read -r editor
+	case "$editor" in
+		1 )
+			editor='nano'
+			break
+			;;
+		2 )
+			editor='neovim'
+			break
+			;;
+		3 )
+			editor='vim'
+			break
+			;;
+	esac
+done
+arch_chroot_bash "pacman -S --noconfirm $editor"
+
 # Reboot
 swapoff /mnt/swapfile
 umount -R /mnt
 
-printf 'Installation is done\n'
+printf '\nInstallation is done\n'
