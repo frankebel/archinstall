@@ -22,7 +22,7 @@ read -r drive
 drive="${drive:-$drive_default}"
 
 
-printf "\nThis will create 2 partitions on /dev/%s.\nPartition 1 will be of size 512M and type 'EFI System'.\nPartition 2 will take the rest and be of type 'Linux Filesystem'.\nYou will lose all data on /dev/%s. Are you sure? [y/N] " "$drive" "$drive"
+printf "\nThis will create 2 partitions on /dev/%s.\nPartition 1 will be of size 512M and type 'EFI System'.\nPartition 2 will take the rest and be of type 'Linux Filesystem'.\n\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive" "$drive"
 read -r yn
 yn="${yn:-n}"
 case "$yn" in
@@ -71,7 +71,7 @@ esac
 unset yn
 
 # Swap file
-printf "Do you want to create a swap file? Enter size in M (0 for none): [2048] "
+printf "Do you want to create a swap file? Enter size in MiB (0 for none): [2048] "
 while true; do
 	read -r swap_size
 	swap_size="${swap_size:-2048}"
@@ -196,7 +196,7 @@ while true; do
 	stty -echo
 	printf 'Enter root password: '
 	read -r pwd_root
-	printf "Please enter again: "
+	printf "\nPlease enter again: "
 	read -r pwd_root2
 	if [ "$pwd_root" = "$pwd_root2" ]; then
 		stty echo
@@ -207,10 +207,10 @@ unset pwd_root2
 arch_chroot_bash "printf '%s\n%s' '$pwd_root' '$pwd_root' | passwd root"
 
 # add user
-printf 'Add regular user: '
-read -r user
 while true; do
-	printf "Is this username correct? %s [y/N] " "$user"
+	printf 'Add regular user: '
+	read -r user
+	printf "\nIs this username correct? %s [y/N] " "$user"
 	read -r yn
 	yn="${yn:-n}"
 	case "$yn" in
@@ -225,7 +225,7 @@ while true; do
 	stty -echo
 	printf 'Enter user password: '
 	read -r pwd_user
-	printf "Please user again: "
+	printf "\nPlease enter again: "
 	read -r pwd_user2
 	if [ "$pwd_user" = "$pwd_user2" ]; then
 		stty echo
