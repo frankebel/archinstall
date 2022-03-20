@@ -257,7 +257,7 @@ arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
 # add text editor
 printf 'Text Editor:\n1) nano\n2) neovim\n3) vim\n'
 while true; do
-	printf 'Choose a layout: '
+	printf 'Choose an editor: '
 	read -r editor
 	case "$editor" in
 		1 )
@@ -277,7 +277,9 @@ done
 arch_chroot_bash "pacman -S --noconfirm $editor"
 
 # Reboot
-swapoff /mnt/swapfile
+if [ "$swap_size" -gt 0 ]; then
+	swapoff /mnt/swapfile
+fi
 umount -R /mnt
 
 printf '\nInstallation is done\n'
