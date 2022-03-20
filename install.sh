@@ -90,6 +90,7 @@ if [ "$swap_size" -gt 0 ]; then
 fi
 
 # Installation
+clear
 printf 'Do you want to update the mirrorlist? (This may take a while) [Y/n] '
 read -r yn
 yn="${yn:-y}"
@@ -106,6 +107,7 @@ pacstrap /mnt base linux linux-firmware
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
 
+clear
 printf "Select timezone (Enter for list): "
 read -r timezone
 region=""
@@ -141,10 +143,12 @@ arch_chroot_bash "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
 arch_chroot_bash "hwclock --systohc"
 
 # Localization
+clear
 sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
 arch_chroot_bash "locale-gen"
 echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
-printf 'Keyboard layouts:\n1) colemak\n2) de-latin1\n3) us\n'
+clear
+printf 'Select a keyboard layouts:\n1) colemak\n2) de-latin1\n3) us\n'
 while true; do
 	printf 'Choose a layout: '
 	read -r keyboard_layout
@@ -166,6 +170,7 @@ done
 echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 
 # Network configuration
+clear
 while true; do
 	printf 'Enter hostname: '
 	read -r hostname
@@ -190,6 +195,7 @@ printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /
 arch_chroot_bash "mkinitcpio -P"
 
 # Root password
+clear
 while true; do
 	stty -echo
 	printf '\nEnter root password: '
@@ -255,7 +261,8 @@ arch_chroot_bash "grub-install --target=x86_64-efi --efi-directory=/boot --bootl
 arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # add text editor
-printf 'Text Editor:\n1) nano\n2) neovim\n3) vim\n'
+clear
+printf 'Choose a text Editor:\n1) nano\n2) neovim\n3) vim\n'
 while true; do
 	printf 'Choose an editor: '
 	read -r editor
