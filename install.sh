@@ -194,7 +194,7 @@ arch_chroot_bash "mkinitcpio -P"
 # Root password
 while true; do
 	stty -echo
-	printf 'Enter root password: '
+	printf '\nEnter root password: '
 	read -r pwd_root
 	printf "\nPlease enter again: "
 	read -r pwd_root2
@@ -220,10 +220,10 @@ while true; do
 	esac
 done
 unset yn
-arch_chroot_bash "useradd -m $user"
+arch_chroot_bash "useradd -m $user -G wheel"
 while true; do
 	stty -echo
-	printf 'Enter user password: '
+	printf '\nEnter user password: '
 	read -r pwd_user
 	printf "\nPlease enter again: "
 	read -r pwd_user2
@@ -237,7 +237,7 @@ arch_chroot_bash "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
 
 # add sudo
 arch_chroot_bash "pacman -S --noconfirm sudo"
-sed -i '^# %wheel ALL=(ALL:ALL) ALL/s/^# //' /mnt/etc/sudoers
+sed -i '/^# %wheel ALL=(ALL:ALL) ALL/s/^# //' /mnt/etc/sudoers
 
 # Boot loader
 case "$(lscpu | grep 'Vendor ID')" in
