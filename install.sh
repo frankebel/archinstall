@@ -101,7 +101,7 @@ case "$yn" in
 esac
 unset yn
 
-pacstrap /mnt base linux linux-firmware neovim
+pacstrap /mnt base linux linux-firmware
 
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -168,9 +168,9 @@ unset yn
 echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 
 # Network configuration
-printf 'Enter hostname: '
-read -r hostname
 while true; do
+	printf 'Enter hostname: '
+	read -r hostname
 	printf "Is this hostname correct? %s [y/N] " "$hostname"
 	read -r yn
 	yn="${yn:-n}"
