@@ -235,6 +235,10 @@ done
 unset pwd_user2
 arch_chroot_bash "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
 
+# add sudo
+arch_chroot_bash "pacman -S --noconfirm sudo"
+sed -i '^# %wheel ALL=(ALL:ALL) ALL/s/^# //' /mnt/etc/sudoers
+
 # Boot loader
 case "$(lscpu | grep 'Vendor ID')" in
 	*AuthenticAMD )
