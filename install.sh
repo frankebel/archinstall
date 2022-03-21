@@ -5,7 +5,7 @@ arch_chroot() {
 }
 
 # check if in right directory
-if ! [ -f Readme.md ]; then
+if ! [ -f README.md ]; then
 	printf 'Please change in directory archinstall.\n'
 	exit 1
 fi
