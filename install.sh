@@ -1,6 +1,6 @@
 #!/bin/sh
 
-arch_chroot_bash() {
+arch_chroot() {
 	arch-chroot /mnt /bin/bash -c "${1}"
 }
 
@@ -139,13 +139,13 @@ while true; do
 done
 unset yn
 
-arch_chroot_bash "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
-arch_chroot_bash "hwclock --systohc"
+arch_chroot "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
+arch_chroot "hwclock --systohc"
 
 # Localization
 clear
 sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
-arch_chroot_bash "locale-gen"
+arch_chroot "locale-gen"
 echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
 clear
 printf 'Select a keyboard layout:\n1) colemak\n2) de-latin1\n3) us\n'
@@ -186,13 +186,13 @@ done
 unset yn
 
 echo "$hostname" > /mnt/etc/hostname
-arch_chroot_bash "pacman -S --noconfirm networkmanager"
-arch_chroot_bash "systemctl enable --now NetworkManager"
+arch_chroot "pacman -S --noconfirm networkmanager"
+arch_chroot "systemctl enable --now NetworkManager"
 
 printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /mnt/etc/hosts
 
 # Initramfs
-arch_chroot_bash "mkinitcpio -P"
+arch_chroot "mkinitcpio -P"
 
 # Root password
 clear
@@ -208,7 +208,7 @@ while true; do
 	fi
 done
 unset pwd_root2
-arch_chroot_bash "printf '%s\n%s' '$pwd_root' '$pwd_root' | passwd root"
+arch_chroot "printf '%s\n%s' '$pwd_root' '$pwd_root' | passwd root"
 
 # add user
 while true; do
@@ -224,7 +224,7 @@ while true; do
 	esac
 done
 unset yn
-arch_chroot_bash "useradd -m $user -G wheel"
+arch_chroot "useradd -m $user -G wheel"
 while true; do
 	stty -echo
 	printf '\nEnter user password: '
@@ -237,10 +237,10 @@ while true; do
 	fi
 done
 unset pwd_user2
-arch_chroot_bash "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
+arch_chroot "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
 
 # add sudo
-arch_chroot_bash "pacman -S --noconfirm sudo"
+arch_chroot "pacman -S --noconfirm sudo"
 sed -i '/^# %wheel ALL=(ALL:ALL) ALL/s/^# //' /mnt/etc/sudoers
 
 # Boot loader
@@ -256,9 +256,9 @@ case "$(lscpu | grep 'Vendor ID')" in
 		exit
 		;;
 esac
-arch_chroot_bash "pacman -S --noconfirm $microcode grub efibootmgr"
-arch_chroot_bash "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
-arch_chroot_bash "grub-mkconfig -o /boot/grub/grub.cfg"
+arch_chroot "pacman -S --noconfirm $microcode grub efibootmgr"
+arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
+arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # add text editor
 clear
@@ -281,7 +281,7 @@ while true; do
 			;;
 	esac
 done
-arch_chroot_bash "pacman -S --noconfirm $editor"
+arch_chroot "pacman -S --noconfirm $editor"
 
 # Reboot
 if [ "$swap_size" -gt 0 ]; then
