@@ -7,7 +7,7 @@ arch_chroot() {
 # Verify the boot mode
 if ! [ -d /sys/firmware/efi/efivars ]; then
 	printf 'You are not in UEFI mode. Script will exit\n'
-	exit
+	exit 1
 fi
 
 timedatectl set-ntp true
@@ -253,7 +253,7 @@ case "$(lscpu | grep 'Vendor ID')" in
 		;;
 	* )
 		printf "Could not find microcode for procesor. Aborting script.\n"
-		exit
+		exit 1
 		;;
 esac
 arch_chroot "pacman -S --noconfirm $microcode grub efibootmgr"
