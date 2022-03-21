@@ -4,6 +4,12 @@ arch_chroot() {
 	arch-chroot /mnt /bin/bash -c "${1}"
 }
 
+# check if in right directory
+if ! [ -f Readme.md ]; then
+	printf 'Please change in directory archinstall.\n'
+	exit 1
+fi
+
 # Verify the boot mode
 if ! [ -d /sys/firmware/efi/efivars ]; then
 	printf 'You are not in UEFI mode. Script will exit\n'
