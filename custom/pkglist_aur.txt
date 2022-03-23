@@ -1,0 +1,10 @@
+amdgpu-fan
+brave-bin
+mangohud
+mprime-bin
+noisetorch
+paru
+simple-mtpfs
+via-bin
+vscodium-bin
+xidlehook
