@@ -319,7 +319,13 @@ arch_chroot "mkinitcpio -P"
 ## Root password
 set_root_password
 ## add user
-add_user
+printf 'Do you want to add an user and install the sudo package? [y/n] '
+read -r adduser
+case "$adduser" in
+	[yY]* )
+		add_user
+	;;
+esac
 ## Boot loader
 boot_loader
 
