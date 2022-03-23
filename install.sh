@@ -367,4 +367,5 @@ fi
 umount -R /mnt
 
 clear
-printf 'Installation is done.\n'
+main_menu
+printf '\033[1mInstallation is done.\n'
