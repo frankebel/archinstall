@@ -19,25 +19,6 @@ edit_makepkg() {
 }
 
 
-set_user() {
-	while true; do
-		printf 'Enter username: '
-		read -r username
-		if ! [ -d "/home/$username" ]; then
-			continue
-		fi
-		printf "Confirm username: %s [y/N] " "$username"
-		read -r confirm_username
-		confirm_username="${confirm_username:-n}"
-		case "$confirm_username" in
-			[yY]* )
-				break
-				;;
-		esac
-	done
-}
-
-
 # main part starts here
 # warning
 printf "\e[1;31mDo not execute this script without knowing what it does.\e[0m Continue? [y/N] "
@@ -49,11 +30,14 @@ case "$yn" in
 		exit 0
 		;;
 esac
+user="$(pwd | awk -F "/" '{print $3}')"
 
 edit_pacman
 edit_makepkg
-
+pacman -S --needed - < pkglist.txt
 # install aur helper paru
 sudo -u "$user" git clone https://aur.archlinux.org/paru.git
-sudo -u "$user" cd paru
+cd paru || exit
 sudo -u "$user" makepkg -si
+cd .. || exit
+rm -rf paru
