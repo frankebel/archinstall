@@ -154,9 +154,13 @@ sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
 arch_chroot "locale-gen"
 echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
 clear
-printf 'Select a keyboard layout:\n1) colemak\n2) de-latin1\n3) us\n'
+printf '
+Select keyboard layout:
+1) colemak
+2) de-latin1
+3) us\n'
 while true; do
-	printf 'Choose a layout: '
+	printf 'Enter option: (1,2,3) '
 	read -r keyboard_layout
 	case "$keyboard_layout" in
 		1 )
@@ -268,9 +272,13 @@ arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # add text editor
 clear
-printf 'Choose a text editor:\n1) nano\n2) neovim\n3) vim\n'
+printf '
+Select text editor:
+1) nano
+2) neovim
+3) vim\n'
 while true; do
-	printf 'Choose an editor: '
+	printf 'Enter option: (1,2,3) '
 	read -r editor
 	case "$editor" in
 		1 )
