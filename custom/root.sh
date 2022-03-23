@@ -8,3 +8,4 @@ sed -i '/^#ParallelDownloads/c\ParallelDownloads = 8' /etc/pacman.conf
 sed -i '/^ParallelDownloads/a ILoveCandy' /etc/pacman.conf
 sed -i '/^#\[multilib\]/s/^#//' /etc/pacman.conf
 sed -i '/^\[multilib\]/{n;s/^#//;}' /etc/pacman.conf
+pacman -Sy
