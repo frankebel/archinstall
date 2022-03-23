@@ -18,7 +18,7 @@ fi
 
 timedatectl set-ntp true
 
-# Partition the disks
+# Partition the disks, Format the partititons
 printf 'On which drive do you want to install Arch Linux?\n'
 lsblk -d
 
@@ -27,8 +27,9 @@ printf "Please choose a drive: [%s] " "$drive_default"
 read -r drive
 drive="${drive:-$drive_default}"
 
-
-printf "\nThis will create 2 partitions on /dev/%s.\nPartition 1 will be of size 512M and type 'EFI System'.\nPartition 2 will take the rest and be of type 'Linux Filesystem'.\n\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive" "$drive"
+printf "
+This will partition and format /dev/%s.
+\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive" "$drive"
 read -r yn
 yn="${yn:-n}"
 case "$yn" in
@@ -47,25 +48,15 @@ case "$yn" in
 
 		w
 		FDISK_CMDS
-		;;
-esac
-unset yn
 
-
-# Format the partitions
-printf "Do you want to format the partitions? Only enter 'y' if you partitioned a drive in the first step. [y/N] "
-read -r yn
-case "$yn" in
-	[yY]* )
 		mkfs.fat -F 32 /dev/"${drive}1"
 		mkfs.ext4 /dev/"${drive}2"
 		;;
 esac
 unset yn
 
-
 # Mount the file systems
-printf "Do you want to mount the partitions? Only enter 'y' if you partitioned a drive in the first step. [y/N] "
+printf "Do you want to mount the partitions? Only enter 'y' if you have the default partitioning. [y/N] "
 read -r yn
 case "$yn" in
 	[yY]* )
