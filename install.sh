@@ -21,7 +21,7 @@ format_and_partition() {
 	read -r drive
 	drive="${drive:-$drive_default}"
 
-	printf "This will partition and format /dev/%s." "$drive"
+	printf "This will partition and format /dev/%s.\n" "$drive"
 	printf "\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive"
 	read -r yn
 	yn="${yn:-n}"
@@ -85,7 +85,7 @@ set_swap() {
 }
 
 
-update_mirrolist() {
+update_mirrorlist() {
 	printf 'Do you want to update the mirrorlist? (This may take a while) [Y/n] '
 	read -r yn
 	yn="${yn:-y}"
