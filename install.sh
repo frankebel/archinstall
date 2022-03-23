@@ -273,6 +273,26 @@ boot_loader() {
 }
 
 
+main_menu() {
+	clear
+	printf '\033[1mArchinstall https://github.com/frankebel/archinstall\033[m\n\n'
+	printf ' 1) Partition and format drive\n'
+	printf ' 2) Mount volumes\n'
+	printf ' 3) Update mirrorlist (optional)\n'
+	printf ' 4) Set text editor\n'
+	printf ' 5) Install essential packages (automatic)\n'
+	printf ' 6) Generate fstab (automatic)\n'
+	printf ' 7) Set time zone\n'
+	printf ' 8) Set keyboard layout\n'
+	printf ' 9) Set hostname\n'
+	printf '10) Create initrmfs (automatic)\n'
+	printf '11) Set root password\n'
+	printf '12) Add user and sudo (optional)\n'
+	printf '13) Install boot loader GRUB (automatic)\n'
+	printf '\n'
+}
+
+
 # main part starts here
 
 # Pre-installation
