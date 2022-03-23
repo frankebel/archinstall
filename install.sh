@@ -6,14 +6,6 @@ if ! [ -f README.md ]; then
 	exit 1
 fi
 
-# Verify the boot mode
-if ! [ -d /sys/firmware/efi/efivars ]; then
-	echo 'You are not in UEFI mode. Script will exit'
-	exit 1
-fi
-
-timedatectl set-ntp true
-
 
 arch_chroot() {
 	arch-chroot /mnt /bin/bash -c "${1}"
@@ -73,7 +65,7 @@ mount_volumes() {
 }
 
 
-create_swap() {
+set_swap() {
 	printf "Do you want to create a swap file? Enter size in MiB (0 for none): [2048] "
 	while true; do
 		read -r swap_size
@@ -106,11 +98,6 @@ update_mirrolist() {
 	esac
 	unset yn
 }
-
-pacstrap /mnt base linux linux-firmware
-
-# Configure the system
-genfstab -U /mnt >> /mnt/etc/fstab
 
 
 set_time_zone() {
@@ -146,15 +133,6 @@ set_time_zone() {
 	unset yn
 }
 
-arch_chroot "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
-arch_chroot "hwclock --systohc"
-
-# Localization
-clear
-sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
-arch_chroot "locale-gen"
-echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
-
 
 set_keyboard_layout() {
 	echo '
@@ -183,11 +161,6 @@ set_keyboard_layout() {
 }
 
 
-echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
-
-# Network configuration
-
-
 set_hostname() {
 	while true; do
 		printf 'Enter hostname: '
@@ -203,16 +176,6 @@ set_hostname() {
 	done
 	unset yn
 }
-
-
-echo "$hostname" > /mnt/etc/hostname
-arch_chroot "pacman -S --noconfirm networkmanager"
-arch_chroot "systemctl enable --now NetworkManager"
-
-printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /mnt/etc/hosts
-
-# Initramfs
-arch_chroot "mkinitcpio -P"
 
 
 set_root_password() {
@@ -310,9 +273,58 @@ set_text_editor() {
 				;;
 		esac
 	done
-	arch_chroot "pacman -S --noconfirm $editor"
 }
 
+
+# main part starts here
+
+# Pre-installation
+if ! [ -d /sys/firmware/efi/efivars ]; then
+	echo 'You are not in UEFI mode. Script will exit'
+	exit 1
+fi
+## Update the system clock
+timedatectl set-ntp true
+## Partition the disks, Format the partitions
+format_and_partition
+## Mount the file systems
+mount_volumes
+set_swap
+
+# Installation
+## Select the mirrors
+update_mirrorlist
+# Install essential packages
+set_text_editor
+pacstrap /mnt base linux linux-firmware $editor
+
+# Configure the system
+## Fstab
+genfstab -U /mnt >> /mnt/etc/fstab
+## Time zone
+set_time_zone
+arch_chroot "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
+arch_chroot "hwclock --systohc"
+## Localization
+sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
+arch_chroot "locale-gen"
+echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
+set_keyboard_layout
+echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
+## Network configuration
+set_hostname
+echo "$hostname" > /mnt/etc/hostname
+arch_chroot "pacman -S --noconfirm networkmanager"
+arch_chroot "systemctl enable --now NetworkManager"
+printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /mnt/etc/hosts
+## Initramfs
+arch_chroot "mkinitcpio -P"
+## Root password
+set_root_password
+## add user
+add_user
+## Boot loader
+boot_loader
 
 # Reboot
 if [ "$swap_size" -gt 0 ]; then
