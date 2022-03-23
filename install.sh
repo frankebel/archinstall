@@ -23,9 +23,9 @@ format_and_partition() {
 
 	printf "This will partition and format /dev/%s.\n" "$drive"
 	printf "\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive"
-	read -r yn
-	yn="${yn:-n}"
-	case "$yn" in
+	read -r partition_drive
+	partition_drive="${partition_drive:-n}"
+	case "$partition_drive" in
 		[yY]* )
 			fdisk "/dev/$drive" <<- FDISK_CMDS
 			g
@@ -46,21 +46,19 @@ format_and_partition() {
 			mkfs.ext4 /dev/"${drive}2"
 			;;
 	esac
-	unset yn
 }
 
 
 mount_volumes() {
 	printf "2) Do you want to mount the partitions? Only enter 'y' if you have the default partitioning. [y/N] "
-	read -r yn
-	case "$yn" in
+	read -r mnt_volumes
+	case "$mnt_volumes" in
 		[yY]* )
 			mount /dev/"${drive}2" /mnt
 			mkdir /mnt/boot
 			mount /dev/"${drive}1" /mnt/boot
 			;;
 	esac
-	unset yn
 }
 
 
@@ -87,15 +85,14 @@ set_swap() {
 
 update_mirrorlist() {
 	printf '4) Do you want to update the mirrorlist? (This may take a while) [Y/n] '
-	read -r yn
-	yn="${yn:-y}"
-	case "$yn" in
+	read -r updt_mirrorlist
+	updt_mirrorlist="${updt_mirrorlist:-y}"
+	case "$updt_mirrorlist" in
 		[yY]* )
 			cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.old
 			reflector --latest 20 --sort rate --save /etc/pacman.d/mirrorlist
 			;;
 	esac
-	unset yn
 }
 
 
@@ -132,9 +129,9 @@ set_time_zone() {
 	while true; do
 		if [ -f "/usr/share/zoneinfo/$timezone" ]; then
 			printf "Confirm timezone: %s [y/N] " "$timezone"
-			read -r yn
-			yn="${yn:-n}"
-			case "$yn" in
+			read -r confirm_timezone
+			confirm_timezone="${confirm_timezone:-n}"
+			case "$confirm_timezone" in
 				[yY]* )
 					break
 					;;
@@ -155,7 +152,6 @@ set_time_zone() {
 			read -r region
 		fi
 	done
-	unset yn
 }
 
 
@@ -191,15 +187,14 @@ set_hostname() {
 		printf 'Enter hostname: '
 		read -r hostname
 		printf "Is this hostname correct? %s [y/N] " "$hostname"
-		read -r yn
-		yn="${yn:-n}"
-		case "$yn" in
+		read -r confirm_hostname
+		confirm_hostname="${confirm_hostname:-n}"
+		case "$confirm_hostname" in
 			[yY]* )
 				break
 				;;
 		esac
 	done
-	unset yn
 }
 
 
@@ -216,7 +211,6 @@ set_root_password() {
 			break
 		fi
 	done
-	unset pwd_root2
 	arch_chroot "printf '%s\n%s' '$pwd_root' '$pwd_root' | passwd root"
 }
 
@@ -226,15 +220,14 @@ add_user() {
 		printf 'Add regular user: '
 		read -r user
 		printf "\nIs this username correct? %s [y/N] " "$user"
-		read -r yn
-		yn="${yn:-n}"
-		case "$yn" in
+		read -r confirm_username
+		confirm_username="${confirm_username:-n}"
+		case "$confirm_username" in
 			[yY]* )
 				break
 				;;
 		esac
 	done
-	unset yn
 	arch_chroot "useradd -m $user -G wheel"
 	while true; do
 		stty -echo
@@ -247,7 +240,6 @@ add_user() {
 			break
 		fi
 	done
-	unset pwd_user2
 	arch_chroot "printf '%s\n%s' '$pwd_user' '$pwd_user' | passwd $user"
 
 	# add sudo
