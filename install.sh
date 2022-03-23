@@ -277,18 +277,19 @@ main_menu() {
 	clear
 	printf '\033[1mArchinstall https://github.com/frankebel/archinstall\033[m\n\n'
 	printf ' 1) Partition and format drive\n'
-	printf ' 2) Mount volumes\n'
-	printf ' 3) Update mirrorlist (optional)\n'
-	printf ' 4) Set text editor\n'
-	printf ' 5) Install essential packages (automatic)\n'
-	printf ' 6) Generate fstab (automatic)\n'
-	printf ' 7) Set time zone\n'
-	printf ' 8) Set keyboard layout\n'
-	printf ' 9) Set hostname\n'
-	printf '10) Create initrmfs (automatic)\n'
-	printf '11) Set root password\n'
-	printf '12) Add user and sudo (optional)\n'
-	printf '13) Install boot loader GRUB (automatic)\n'
+	printf ' 2) Create swapfile (optional)\n'
+	printf ' 3) Mount volumes\n'
+	printf ' 4) Update mirrorlist (optional)\n'
+	printf ' 5) Set text editor\n'
+	printf ' 6) Install essential packages (automatic)\n'
+	printf ' 7) Generate fstab (automatic)\n'
+	printf ' 8) Set time zone\n'
+	printf ' 9) Set keyboard layout\n'
+	printf '10) Set hostname\n'
+	printf '11) Create initrmfs (automatic)\n'
+	printf '12) Set root password\n'
+	printf '13) Add user and sudo (optional)\n'
+	printf '14) Install boot loader GRUB (automatic)\n'
 	printf '\n'
 }
 
@@ -308,6 +309,7 @@ format_and_partition
 ## Mount the file systems
 main_menu
 mount_volumes
+main_menu
 set_swap
 
 # Installation
