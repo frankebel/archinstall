@@ -101,9 +101,9 @@ update_mirrorlist() {
 
 set_text_editor() {
 	printf '5) Select text editor:\n'
-	printf '1) nano\n'
-	printf '2) neovim\n'
-	printf '3) vim\n'
+	printf '[1] nano\n'
+	printf '[2] neovim\n'
+	printf '[3] vim\n'
 	while true; do
 		printf 'Enter option: [1,2,3] '
 		read -r editor
@@ -161,9 +161,9 @@ set_time_zone() {
 
 set_keyboard_layout() {
 	printf '9) Select keyboard layout:\n'
-	printf '1) colemak\n'
-	printf '2) de-latin1\n'
-	printf '3) us\n'
+	printf '[1] colemak\n'
+	printf '[2] de-latin1\n'
+	printf '[3] us\n'
 	while true; do
 		printf 'Enter option: [1,2,3] '
 		read -r keyboard_layout
