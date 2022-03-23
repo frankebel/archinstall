@@ -350,7 +350,7 @@ main_menu
 set_root_password
 ## add user
 main_menu
-printf 'Do you want to add a user and install the sudo package? [y/n] '
+printf 'Do you want to add a user and install the sudo package? [y/N] '
 read -r adduser
 case "$adduser" in
 	[yY]* )
