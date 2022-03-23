@@ -6,20 +6,20 @@ arch_chroot() {
 
 # check if in right directory
 if ! [ -f README.md ]; then
-	printf 'Please change in directory archinstall.\n'
+	echo 'Please change in directory archinstall.'
 	exit 1
 fi
 
 # Verify the boot mode
 if ! [ -d /sys/firmware/efi/efivars ]; then
-	printf 'You are not in UEFI mode. Script will exit\n'
+	echo 'You are not in UEFI mode. Script will exit'
 	exit 1
 fi
 
 timedatectl set-ntp true
 
 # Partition the disks, Format the partititons
-printf 'On which drive do you want to install Arch Linux?\n'
+echo 'On which drive do you want to install Arch Linux?'
 lsblk -d
 
 drive_default="$(lsblk -d | grep -E '^nvme|^sd' | awk '{print $1}' | head -n 1)"
@@ -145,11 +145,11 @@ sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
 arch_chroot "locale-gen"
 echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
 clear
-printf '
+echo '
 Select keyboard layout:
 1) colemak
 2) de-latin1
-3) us\n'
+3) us'
 while true; do
 	printf 'Enter option: (1,2,3) '
 	read -r keyboard_layout
@@ -263,11 +263,11 @@ arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # add text editor
 clear
-printf '
+echo '
 Select text editor:
 1) nano
 2) neovim
-3) vim\n'
+3) vim'
 while true; do
 	printf 'Enter option: (1,2,3) '
 	read -r editor
