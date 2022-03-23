@@ -286,7 +286,7 @@ main_menu() {
 	printf ' 8) Set time zone\n'
 	printf ' 9) Set keyboard layout\n'
 	printf '10) Set hostname\n'
-	printf '11) Create initrmfs (automatic)\n'
+	printf '11) Create initramfs (automatic)\n'
 	printf '12) Set root password\n'
 	printf '13) Add user and sudo (optional)\n'
 	printf '14) Install boot loader GRUB (automatic)\n'
@@ -350,7 +350,7 @@ main_menu
 set_root_password
 ## add user
 main_menu
-printf 'Do you want to add an user and install the sudo package? [y/n] '
+printf 'Do you want to add a user and install the sudo package? [y/n] '
 read -r adduser
 case "$adduser" in
 	[yY]* )
