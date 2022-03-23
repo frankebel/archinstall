@@ -303,15 +303,19 @@ fi
 ## Update the system clock
 timedatectl set-ntp true
 ## Partition the disks, Format the partitions
+main_menu
 format_and_partition
 ## Mount the file systems
+main_menu
 mount_volumes
 set_swap
 
 # Installation
 ## Select the mirrors
+main_menu
 update_mirrorlist
 # Install essential packages
+main_menu
 set_text_editor
 pacstrap /mnt base linux linux-firmware $editor
 
@@ -319,6 +323,7 @@ pacstrap /mnt base linux linux-firmware $editor
 ## Fstab
 genfstab -U /mnt >> /mnt/etc/fstab
 ## Time zone
+main_menu
 set_time_zone
 arch_chroot "ln -sf /usr/share/zoneinfo/$timezone /etc/localtime"
 arch_chroot "hwclock --systohc"
@@ -326,9 +331,11 @@ arch_chroot "hwclock --systohc"
 sed -i '/^#en_US.UTF-8 UTF-8/s/^#//' /mnt/etc/locale.gen
 arch_chroot "locale-gen"
 echo 'LANG=en_US.UTF-8' > /mnt/etc/locale.conf
+main_menu
 set_keyboard_layout
 echo "KEYMAP=$keymap" > /mnt/etc/vconsole.conf
 ## Network configuration
+main_menu
 set_hostname
 echo "$hostname" > /mnt/etc/hostname
 arch_chroot "pacman -S --noconfirm networkmanager"
@@ -337,8 +344,10 @@ printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /
 ## Initramfs
 arch_chroot "mkinitcpio -P"
 ## Root password
+main_menu
 set_root_password
 ## add user
+main_menu
 printf 'Do you want to add an user and install the sudo package? [y/n] '
 read -r adduser
 case "$adduser" in
