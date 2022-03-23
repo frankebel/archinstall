@@ -2,7 +2,7 @@
 
 # check if in right directory
 if ! [ -f README.md ]; then
-	echo 'Please change in directory archinstall.'
+	printf 'Please change in directory archinstall.\n'
 	exit 1
 fi
 
@@ -13,7 +13,7 @@ arch_chroot() {
 
 
 format_and_partition() {
-	echo 'On which drive do you want to install Arch Linux?'
+	printf 'On which drive do you want to install Arch Linux?\n'
 	lsblk -d
 
 	drive_default="$(lsblk -d | grep -E '^nvme|^sd' | awk '{print $1}' | head -n 1)"
@@ -21,9 +21,8 @@ format_and_partition() {
 	read -r drive
 	drive="${drive:-$drive_default}"
 
-	printf "
-	This will partition and format /dev/%s.
-	\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive" "$drive"
+	printf "This will partition and format /dev/%s." "$drive"
+	printf "\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive"
 	read -r yn
 	yn="${yn:-n}"
 	case "$yn" in
@@ -100,6 +99,32 @@ update_mirrolist() {
 }
 
 
+set_text_editor() {
+	printf 'Select text editor:\n'
+	printf '1) nano\n'
+	printf '2) neovim\n'
+	printf '3) vim\n'
+	while true; do
+		printf 'Enter option: [1,2,3] '
+		read -r editor
+		case "$editor" in
+			1 )
+				editor='nano'
+				break
+				;;
+			2 )
+				editor='neovim'
+				break
+				;;
+			3 )
+				editor='vim'
+				break
+				;;
+		esac
+	done
+}
+
+
 set_time_zone() {
 	printf "Select timezone (Enter for list): "
 	read -r timezone
@@ -135,13 +160,12 @@ set_time_zone() {
 
 
 set_keyboard_layout() {
-	echo '
-	Select keyboard layout:
-	1) colemak
-	2) de-latin1
-	3) us'
+	printf 'Select keyboard layout:\n'
+	printf '1) colemak\n'
+	printf '2) de-latin1\n'
+	printf '3) us\n'
 	while true; do
-		printf 'Enter option: (1,2,3) '
+		printf 'Enter option: [1,2,3] '
 		read -r keyboard_layout
 		case "$keyboard_layout" in
 			1 )
@@ -246,33 +270,6 @@ boot_loader() {
 	arch_chroot "pacman -S --noconfirm $microcode grub efibootmgr"
 	arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
 	arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
-}
-
-
-set_text_editor() {
-	echo '
-	Select text editor:
-	1) nano
-	2) neovim
-	3) vim'
-	while true; do
-		printf 'Enter option: (1,2,3) '
-		read -r editor
-		case "$editor" in
-			1 )
-				editor='nano'
-				break
-				;;
-			2 )
-				editor='neovim'
-				break
-				;;
-			3 )
-				editor='vim'
-				break
-				;;
-		esac
-	done
 }
 
 
