@@ -144,7 +144,7 @@ set_time_zone() {
 					region=""
 					;;
 			esac
-		elif ! [ "$region" = "" ] && [ -d "/usr/share/zoneinfo/$region" ]; then
+		elif [ "$region" != "" ] && [ -d "/usr/share/zoneinfo/$region" ]; then
 			ls "/usr/share/zoneinfo/$region"
 			printf "Enter city: "
 			read -r city
