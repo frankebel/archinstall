@@ -55,5 +55,5 @@ edit_makepkg
 
 # install aur helper paru
 sudo -u "$user" git clone https://aur.archlinux.org/paru.git
-cd paru
-makepkg -si
+sudo -u "$user" cd paru
+sudo -u "$user" makepkg -si
