@@ -13,7 +13,7 @@ arch_chroot() {
 
 
 format_and_partition() {
-	printf 'On which drive do you want to install Arch Linux?\n'
+	printf '1) On which drive do you want to install Arch Linux?\n'
 	lsblk -d
 
 	drive_default="$(lsblk -d | grep -E '^nvme|^sd' | awk '{print $1}' | head -n 1)"
@@ -51,7 +51,7 @@ format_and_partition() {
 
 
 mount_volumes() {
-	printf "Do you want to mount the partitions? Only enter 'y' if you have the default partitioning. [y/N] "
+	printf "2) Do you want to mount the partitions? Only enter 'y' if you have the default partitioning. [y/N] "
 	read -r yn
 	case "$yn" in
 		[yY]* )
@@ -65,7 +65,7 @@ mount_volumes() {
 
 
 set_swap() {
-	printf "Do you want to create a swap file? Enter size in MiB (0 for none): [2048] "
+	printf "3) Do you want to create a swap file? Enter size in MiB (0 for none): [2048] "
 	while true; do
 		read -r swap_size
 		swap_size="${swap_size:-2048}"
@@ -86,7 +86,7 @@ set_swap() {
 
 
 update_mirrorlist() {
-	printf 'Do you want to update the mirrorlist? (This may take a while) [Y/n] '
+	printf '4) Do you want to update the mirrorlist? (This may take a while) [Y/n] '
 	read -r yn
 	yn="${yn:-y}"
 	case "$yn" in
@@ -100,7 +100,7 @@ update_mirrorlist() {
 
 
 set_text_editor() {
-	printf 'Select text editor:\n'
+	printf '5) Select text editor:\n'
 	printf '1) nano\n'
 	printf '2) neovim\n'
 	printf '3) vim\n'
@@ -126,7 +126,7 @@ set_text_editor() {
 
 
 set_time_zone() {
-	printf "Select timezone (Enter for list): "
+	printf "8) Select timezone (Enter for list): "
 	read -r timezone
 	region=""
 	while true; do
@@ -160,7 +160,7 @@ set_time_zone() {
 
 
 set_keyboard_layout() {
-	printf 'Select keyboard layout:\n'
+	printf '9) Select keyboard layout:\n'
 	printf '1) colemak\n'
 	printf '2) de-latin1\n'
 	printf '3) us\n'
@@ -186,6 +186,7 @@ set_keyboard_layout() {
 
 
 set_hostname() {
+	printf '10) Set hostname\n'
 	while true; do
 		printf 'Enter hostname: '
 		read -r hostname
@@ -203,6 +204,7 @@ set_hostname() {
 
 
 set_root_password() {
+	printf '12) Set root password\n'
 	while true; do
 		stty -echo
 		printf '\nEnter root password: '
@@ -277,8 +279,8 @@ main_menu() {
 	clear
 	printf '\033[1mArchinstall https://github.com/frankebel/archinstall\033[m\n\n'
 	printf ' 1) Partition and format drive\n'
-	printf ' 2) Create swapfile (optional)\n'
-	printf ' 3) Mount volumes\n'
+	printf ' 2) Mount volumes\n'
+	printf ' 3) Create swapfile (optional)\n'
 	printf ' 4) Update mirrorlist (optional)\n'
 	printf ' 5) Set text editor\n'
 	printf ' 6) Install essential packages (automatic)\n'
@@ -350,7 +352,7 @@ main_menu
 set_root_password
 ## add user
 main_menu
-printf 'Do you want to add a user and install the sudo package? [y/N] '
+printf '13) Do you want to add a user and install the sudo package? [y/N] '
 read -r adduser
 case "$adduser" in
 	[yY]* )
