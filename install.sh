@@ -357,20 +357,6 @@ boot_loader
 # Reboot
 # copy archinstall to new system
 cp -r ../archinstall /mnt/root
-if [ "$adduser" = 'y' ] || [ "$adduser" = 'Y' ]; then
-	printf "Do you want to copy archinstall to /home/%s? [Y/n] " "$user"
-	read -r copy_archinstall
-	copy_archinstall="${copy_archinstall:-y}"
-	case "$copy_archinstall" in
-		[yY]* )
-			cp -r ../archinstall "/mnt/home/$user"
-			;;
-	esac
-fi
-
-if [ "$swap_size" -gt 0 ]; then
-	swapoff /mnt/swapfile
-fi
 umount -R /mnt
 
 clear
