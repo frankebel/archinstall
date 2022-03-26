@@ -83,3 +83,7 @@ install_aur
 install_pip
 
 install_dotfiles
+
+# user and group management
+usermod -aG lp video "$SUDO_USER" # video group for light package
+usermod -s /bin/zsh "$SUDO_USER"
