@@ -37,6 +37,14 @@ install_aur() {
 }
 
 
+install_pip() {
+	if [ "$(grep '#\| ' pkglist_pip.txt)" != '' ]; then
+		printf 'Please remove comments and whitespace from pkglist_pip.txt.\n'
+		exit 1
+	fi
+	sudo -u "$SUDO_USER" pip install --user -r pkglist_pip.txt
+}
+
 
 # main part starts here
 # warning
@@ -62,3 +70,4 @@ cd .. || exit
 rm -rf paru
 
 install_aur
+install_pip
