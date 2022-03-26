@@ -46,6 +46,16 @@ install_pip() {
 }
 
 
+install_dotfiles() {
+	gitdir="/home/$SUDO_USER/.dotfiles"
+	wktree="/home/$SUDO_USER"
+	sudo -u "$SUDO_USER" mkdir "$gitdir"
+	sudo -u "$SUDO_USER" git clone --bare https://github.com/frankebel/dotfiles.git "$gitdir"
+	sudo -u "$SUDO_USER" git --git-dir="$gitdir" --work-tree="$wktree" checkout --force
+	sudo -u "$SUDO_USER" git --git-dir="$gitdir" --work-tree="$wktree" config status.showUntrackedFiles no
+}
+
+
 # main part starts here
 # warning
 printf "\e[1;31mDo not execute this script without knowing what it does.\e[0m Continue? [y/N] "
@@ -71,3 +81,5 @@ rm -rf paru
 
 install_aur
 install_pip
+
+install_dotfiles
