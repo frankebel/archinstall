@@ -25,6 +25,7 @@ linux-lts
 #lutris
 lxappearance-gtk3
 lynx
+man-db
 mpv
 neofetch
 neomutt
@@ -76,6 +77,7 @@ udiskie
 udisks2
 urlscan
 #virtualbox
+#virtualbox-guest-utils
 #virtualbox-host-modules-arch
 xclip
 xorg-server
