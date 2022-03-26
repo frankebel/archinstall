@@ -19,6 +19,15 @@ edit_makepkg() {
 }
 
 
+edit_grub() {
+	cp /etc/default/grub /etc/default/grub.old
+	sed -i '/^GRUB_DEFAULT/c\GRUB_DEFAULT=saved' /etc/default/grub
+	sed -i '/^GRUB_DEFAULT/a GRUB_SAVEDEFAULT=true' /etc/default/grub
+	sed -i '/^GRUB_TIMEOUT/c\GRUB_TIMEOUT=1' /etc/default/grub
+	grub-mkconfig -o /boot/grub/grub.cfg
+}
+
+
 install_pacman() {
 	if [ "$(grep '#\| ' pkglist.txt)" != '' ]; then
 		printf 'Please remove comments and whitespace from pkglist.txt.\n'
@@ -91,8 +100,15 @@ usermod -s /bin/zsh "$SUDO_USER"
 # create directories
 sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/Data"
 sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/Temp/Torrents"
+sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.cache/zsh"
 sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/gnupg"
 chmod 700 "/home/$SUDO_USER/.local/share/gnupg"
 sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/pass"
 sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/isync/mailbox"
 sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/isync/tuw"
+
+# themes
+sudo -u "$SUDO_USER" git clone https://github.com/dracula/gtk.git "/home/$SUDO_USER/.themes/Dracula"
+
+# configure and regenerate grub
+edit_grub
