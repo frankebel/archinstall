@@ -19,6 +19,25 @@ edit_makepkg() {
 }
 
 
+install_pacman() {
+	if [ "$(grep '#\| ' pkglist.txt)" != '' ]; then
+		printf 'Please remove comments and whitespace from pkglist.txt.\n'
+		exit 1
+	fi
+	pacman -S --needed - < pkglist.txt
+}
+
+
+install_aur() {
+	if [ "$(grep '#\| ' pkglist_aur.txt)" != '' ]; then
+		printf 'Please remove comments and whitespace from pkglist_aur.txt.\n'
+		exit 1
+	fi
+	sudo -u "$SUDO_USER" sh -c 'paru -S --needed - < pkglist_aur.txt'
+}
+
+
+
 # main part starts here
 # warning
 printf "\e[1;31mDo not execute this script without knowing what it does.\e[0m Continue? [y/N] "
@@ -30,17 +49,16 @@ case "$yn" in
 		exit 0
 		;;
 esac
-user="$(pwd | awk -F "/" '{print $3}')"
 
 edit_pacman
 edit_makepkg
-pacman -S --needed - < pkglist.txt
+install_pacman
 
 # install aur helper paru
-sudo -u "$user" git clone https://aur.archlinux.org/paru.git
+sudo -u "$SUDO_USER" git clone https://aur.archlinux.org/paru.git
 cd paru || exit
-sudo -u "$user" makepkg -si
+sudo -u "$SUDO_USER" makepkg -si
 cd .. || exit
 rm -rf paru
 
-sudo -u "$user" paru -S --needed - < pkglist_aur.txt
+install_aur
