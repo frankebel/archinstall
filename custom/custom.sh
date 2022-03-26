@@ -87,3 +87,10 @@ install_dotfiles
 # user and group management
 usermod -aG lp video "$SUDO_USER" # video group for light package
 usermod -s /bin/zsh "$SUDO_USER"
+
+# create directories
+sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/Data"
+sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/Temp/Torrents"
+sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/pass"
+sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/isync/mailbox"
+sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/isync/tuw"
