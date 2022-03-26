@@ -35,9 +35,12 @@ user="$(pwd | awk -F "/" '{print $3}')"
 edit_pacman
 edit_makepkg
 pacman -S --needed - < pkglist.txt
+
 # install aur helper paru
 sudo -u "$user" git clone https://aur.archlinux.org/paru.git
 cd paru || exit
 sudo -u "$user" makepkg -si
 cd .. || exit
 rm -rf paru
+
+sudo -u "$user" paru -S --needed - < pkglist_aur.txt
