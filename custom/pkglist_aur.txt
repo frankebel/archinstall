@@ -1,10 +1,11 @@
-amdgpu-fan
+#amdgpu-fan # GPU fan curve
 brave-bin
-mangohud
+#mangohud # game performance overlay
 mprime-bin
 noisetorch
-paru
-simple-mtpfs
-via-bin
+#paru # already in custom script
+python-transmissionrpc
+#simple-mtpfs
+#via-bin # keyboard configurator
 vscodium-bin
 xidlehook
