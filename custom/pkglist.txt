@@ -1,35 +1,37 @@
 alacritty
 alsa-utils
 arandr
-base
+#base # already in install script
 base-devel
+#bluez # bluetooth
+#bluez-utils # bluetooth
 cups
 discord
 dunst
-efibootmgr
-figlet
+# efibootmgr # already in install script
 firefox
 flameshot
 gimp
 git
-grub
+#grub # already in install script
 htop
 i3lock
 isync
 libreoffice-fresh
-linux
-linux-firmware
+#light # laptop brightness
+#linux # already in install script
+#linux-firmware # already in install script
 linux-lts
-lutris
+#lutris
 lxappearance-gtk3
 lynx
 mpv
 neofetch
 neomutt
 neovim
-networkmanager
+#network-manager-applet # for systray
+#networkmanager # already in install script
 newsboat
-nm-connection-editor
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
@@ -46,7 +48,11 @@ piper
 pipewire
 pipewire-media-session
 pipewire-pulse
+python-matplotlib
+python-matplotlib-inline
+python-numpy
 python-pip
+python-psutil
 qt5ct
 qtile
 redshift
@@ -56,6 +62,7 @@ rsync
 shellcheck
 starship
 steam
+sudo
 sxhkd
 sxiv
 syncthing
@@ -68,12 +75,12 @@ transmission-cli
 udiskie
 udisks2
 urlscan
-virtualbox
-virtualbox-host-modules-arch
+#virtualbox
+#virtualbox-host-modules-arch
 xclip
 xorg-server
 xorg-setxkbmap
-xorg-xbacklight
+xorg-xmodmap
 xorg-xrandr
 xorg-xinit
 xournalpp
