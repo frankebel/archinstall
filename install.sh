@@ -313,10 +313,12 @@ update_mirrorlist
 # Install essential packages
 main_menu
 set_text_editor
+main_menu
 pacstrap /mnt base linux linux-firmware $editor
 
 # Configure the system
 ## Fstab
+main_menu
 genfstab -U /mnt >> /mnt/etc/fstab
 ## Time zone
 main_menu
@@ -338,6 +340,7 @@ arch_chroot "pacman -S --noconfirm networkmanager"
 arch_chroot "systemctl enable --now NetworkManager"
 printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /mnt/etc/hosts
 ## Initramfs
+main_menu
 arch_chroot "mkinitcpio -P"
 ## Root password
 main_menu
@@ -352,6 +355,7 @@ case "$adduser" in
 	;;
 esac
 ## Boot loader
+main_menu
 boot_loader
 
 # Reboot
