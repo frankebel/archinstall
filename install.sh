@@ -42,7 +42,7 @@ format_and_partition() {
 			w
 			FDISK_CMDS
 
-			partitions="$(lslbk -r -n -o NAME,TYPE "/dev/$drive" | awk '/part/{print $1}')"
+			partitions="$(lsblk -r -n -o NAME,TYPE "/dev/$drive" | awk '/part/{print $1}')"
 			efi_system_partition="$(echo "$partitions" | grep '1$')"
 			root_partition="$(echo "$partitions" | grep '2$')"
 
