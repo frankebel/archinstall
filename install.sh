@@ -42,8 +42,12 @@ format_and_partition() {
 			w
 			FDISK_CMDS
 
-			mkfs.fat -F 32 /dev/"${drive}1"
-			mkfs.ext4 /dev/"${drive}2"
+			partitions="$(lslbk -r -n -o NAME,TYPE "/dev/$drive" | awk '/part/{print $1}')"
+			efi_system_partition="$(echo "$partitions" | grep '1$')"
+			root_partition="$(echo "$partitions" | grep '2$')"
+
+			mkfs.fat -F 32 "/dev/$efi_system_partition"
+			mkfs.ext4 /dev/"$root_partition"
 			;;
 	esac
 }
@@ -54,9 +58,9 @@ mount_volumes() {
 	read -r mnt_volumes
 	case "$mnt_volumes" in
 		[yY]* )
-			mount /dev/"${drive}2" /mnt
+			mount "/dev/$root_partition" /mnt
 			mkdir /mnt/boot
-			mount /dev/"${drive}1" /mnt/boot
+			mount "/dev/$efi_system_partition" /mnt/boot
 			;;
 	esac
 }
