@@ -75,6 +75,7 @@ format_and_partition() {
 			if [ "$encrypt_root" = 'true' ]; then
 				printf '%s' "$pwd_partition" | cryptsetup luksFormat --key-file=- "dev/$root_partition"
 				printf '%s' "$pwd_partition" | cryptsetup open --key-file=- "/dev/$root_partition" root
+				root_partition_encrypted="$root_partition"
 				root_partition='mapper/root'
 			fi
 
@@ -309,6 +310,10 @@ boot_loader() {
 			;;
 	esac
 	arch_chroot "pacman -S --noconfirm $microcode grub efibootmgr"
+	if [ "$encrypt_root" = 'true' ]; then
+		temp="$(lsblk -d -n -o UUID "/dev/$root_partition_encrypted")"
+		sed -i "/^GRUB_CMDLINE_LINUX=\"/s//&root=\/dev\/mapper\/root cryptdevice=UUID=$temp:root/" /mnt/etc/default/grub
+	fi
 	arch_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
 	arch_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 }
