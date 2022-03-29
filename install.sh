@@ -237,9 +237,9 @@ set_hostname() {
 create_initramfs() {
 	if [ "$encrypt_root" = 'true' ]; then
 		cp /mnt/etc/mkinitcpio.conf /mnt/etc/mkinitcpio.conf.old
-		sed -i '/^HOOKS/s/ keyboard//' /mnt/etc/default.grub
-		sed -i '/^HOOKS/s/autodetect/& keyboard keymap/' /mnt/etc/default.grub
-		sed -i '/^HOOKS/s/block/& encrypt/' /mnt/etc/default.grub
+		sed -i '/^HOOKS/s/ keyboard//' /mnt/etc/mkinitcpio.conf
+		sed -i '/^HOOKS/s/autodetect/& keyboard keymap/' /mnt/etc/mkinitcpio.conf
+		sed -i '/^HOOKS/s/block/& encrypt/' /mnt/etc/mkinitcpio.conf
 	fi
 	arch_chroot "mkinitcpio -P"
 }
