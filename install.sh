@@ -47,7 +47,7 @@ format_and_partition() {
 		esac
 	done
 
-	printf "This will partition and format /dev/%s.\n" "$drive"
+	printf "\nThis will partition and format /dev/%s.\n" "$drive"
 	printf "\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive"
 	read -r partition_drive
 	partition_drive="${partition_drive:-n}"
@@ -77,7 +77,7 @@ format_and_partition() {
 
 	if [ "$encrypt_root" = 'true' ]; then
 		if [ "$partition_drive" = 'true' ];then
-			printf '%s' "$pwd_partition" | cryptsetup luksFormat --key-file=- "dev/$root_partition"
+			printf '%s' "$pwd_partition" | cryptsetup luksFormat --key-file=- "/dev/$root_partition"
 		fi
 		printf '%s' "$pwd_partition" | cryptsetup open --key-file=- "/dev/$root_partition" root
 		root_partition_encrypted="$root_partition"
