@@ -21,6 +21,32 @@ format_and_partition() {
 	read -r drive
 	drive="${drive:-$drive_default}"
 
+	printf "Do you want to encrypt your root partition? [y/n] "
+	while true; do
+		read -r encrypt_root
+		case "$encrypt_root" in
+			[yY]* )
+				encrypt_root='true'
+				while true; do
+					stty -echo
+					printf '\nEnter partition password: '
+					read -r pwd_partition
+					printf "\nPlease enter again: "
+					read -r pwd_partition2
+					if [ "$pwd_partition" = "$pwd_partition2" ]; then
+						stty echo
+						break
+					fi
+				done
+				break
+				;;
+			[nN]* )
+				encrypt_root='false'
+				break
+				;;
+		esac
+	done
+
 	printf "This will partition and format /dev/%s.\n" "$drive"
 	printf "\e[1;31mYou will lose all data on /dev/%s.\e[0m Are you sure? [y/N] " "$drive"
 	read -r partition_drive
@@ -46,8 +72,14 @@ format_and_partition() {
 			efi_system_partition="$(echo "$partitions" | grep '1$')"
 			root_partition="$(echo "$partitions" | grep '2$')"
 
+			if [ "$encrypt_root" = 'true' ]; then
+				printf '%s' "$pwd_partition" | cryptsetup luksFormat --key-file=- "dev/$root_partition"
+				printf '%s' "$pwd_partition" | cryptsetup open --key-file=- "/dev/$root_partition" root
+				root_partition='mapper/root'
+			fi
+
 			mkfs.fat -F 32 "/dev/$efi_system_partition"
-			mkfs.ext4 /dev/"$root_partition"
+			mkfs.ext4 "/dev/$root_partition"
 			;;
 	esac
 }
