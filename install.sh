@@ -21,8 +21,8 @@ format_and_partition() {
 	read -r drive
 	drive="${drive:-$drive_default}"
 
-	printf "Do you want to encrypt your root partition? [y/n] "
 	while true; do
+		printf "Do you want to encrypt your root partition? [y/n] "
 		read -r encrypt_root
 		case "$encrypt_root" in
 			[yY]* )
@@ -53,6 +53,7 @@ format_and_partition() {
 	partition_drive="${partition_drive:-n}"
 	case "$partition_drive" in
 		[yY]* )
+			partition_drive='true'
 			fdisk "/dev/$drive" <<- FDISK_CMDS
 			g
 			n
@@ -67,35 +68,33 @@ format_and_partition() {
 
 			w
 			FDISK_CMDS
-
-			partitions="$(lsblk -r -n -o NAME,TYPE "/dev/$drive" | awk '/part/{print $1}')"
-			efi_system_partition="$(echo "$partitions" | grep '1$')"
-			root_partition="$(echo "$partitions" | grep '2$')"
-
-			if [ "$encrypt_root" = 'true' ]; then
-				printf '%s' "$pwd_partition" | cryptsetup luksFormat --key-file=- "dev/$root_partition"
-				printf '%s' "$pwd_partition" | cryptsetup open --key-file=- "/dev/$root_partition" root
-				root_partition_encrypted="$root_partition"
-				root_partition='mapper/root'
-			fi
-
-			mkfs.fat -F 32 "/dev/$efi_system_partition"
-			mkfs.ext4 "/dev/$root_partition"
 			;;
 	esac
+
+	partitions="$(lsblk -r -n -o NAME,TYPE "/dev/$drive" | awk '/part/{print $1}')"
+	efi_system_partition="$(echo "$partitions" | grep '1$')"
+	root_partition="$(echo "$partitions" | grep '2$')"
+
+	if [ "$encrypt_root" = 'true' ]; then
+		if [ "$partition_drive" = 'true' ];then
+			printf '%s' "$pwd_partition" | cryptsetup luksFormat --key-file=- "dev/$root_partition"
+		fi
+		printf '%s' "$pwd_partition" | cryptsetup open --key-file=- "/dev/$root_partition" root
+		root_partition_encrypted="$root_partition"
+		root_partition='mapper/root'
+	fi
+
+	if [ "$partition_drive" = 'true' ]; then
+		mkfs.fat -F 32 "/dev/$efi_system_partition"
+		mkfs.ext4 "/dev/$root_partition"
+	fi
 }
 
 
 mount_volumes() {
-	printf "2) Do you want to mount the partitions? Only enter 'y' if you have the default partitioning. [y/N] "
-	read -r mnt_volumes
-	case "$mnt_volumes" in
-		[yY]* )
-			mount "/dev/$root_partition" /mnt
-			mkdir /mnt/boot
-			mount "/dev/$efi_system_partition" /mnt/boot
-			;;
-	esac
+	mount "/dev/$root_partition" /mnt
+	mkdir /mnt/boot
+	mount "/dev/$efi_system_partition" /mnt/boot
 }
 
 
@@ -323,7 +322,7 @@ main_menu() {
 	clear
 	printf '\033[1mArchinstall https://github.com/frankebel/archinstall\033[m\n\n'
 	printf ' 1) Partition and format drive\n'
-	printf ' 2) Mount volumes\n'
+	printf ' 2) Mount volumes (automatic)\n'
 	printf ' 3) Create swapfile (optional)\n'
 	printf ' 4) Update mirrorlist (optional)\n'
 	printf ' 5) Set text editor\n'
@@ -410,10 +409,17 @@ esac
 main_menu
 boot_loader
 
-# Reboot
 # copy archinstall to new system
 cp -r ../archinstall /mnt/root
+
+# Reboot
+if [ "$swap_size" -gt 0 ]; then
+	swapoff /mnt/swapfile
+fi
 umount -R /mnt
+if [ "$encrypt_root" = 'true' ]; then
+	cryptsetup close "/dev/$root_partition"
+fi
 
 clear
 main_menu
