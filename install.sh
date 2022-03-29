@@ -234,6 +234,17 @@ set_hostname() {
 }
 
 
+create_initramfs() {
+	if [ "$encrypt_root" = 'true' ]; then
+		cp /mnt/etc/mkinitcpio.conf /mnt/etc/mkinitcpio.conf.old
+		sed -i '/^HOOKS/s/ keyboard//' /mnt/etc/default.grub
+		sed -i '/^HOOKS/s/autodetect/& keyboard keymap/' /mnt/etc/default.grub
+		sed -i '/^HOOKS/s/block/& encrypt/' /mnt/etc/default.grub
+	fi
+	arch_chroot "mkinitcpio -P"
+}
+
+
 set_root_password() {
 	printf '12) Set root password\n'
 	while true; do
@@ -377,7 +388,7 @@ arch_chroot "systemctl enable --now NetworkManager"
 printf "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t%s\n" "$hostname" > /mnt/etc/hosts
 ## Initramfs
 main_menu
-arch_chroot "mkinitcpio -P"
+create_initramfs
 ## Root password
 main_menu
 set_root_password
