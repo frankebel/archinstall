@@ -112,3 +112,6 @@ sudo -u "$SUDO_USER" git clone https://github.com/dracula/gtk.git "/home/$SUDO_U
 
 # configure and regenerate grub
 edit_grub
+
+# remove bash files
+rm /home/"$SUDO_USER"/.bash*
