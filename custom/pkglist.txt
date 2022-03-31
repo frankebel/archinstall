@@ -44,7 +44,7 @@ pass
 pass-otp
 passff-host
 pavucontrol
-pcmanfm
+pcmanfm-gtk3
 piper
 pipewire
 pipewire-media-session
