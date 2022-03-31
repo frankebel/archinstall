@@ -115,3 +115,8 @@ edit_grub
 
 # remove bash files
 rm /home/"$SUDO_USER"/.bash*
+
+# systemd units
+cp files/suspend@.service /etc/systemd/system/
+systemctl enable "suspend@$SUDO_USER.service"
+sudo -u "$SUDO_USER" systemctl enable --user "/home/$SUDO_USER/.config/systemd/user/mbsync.timer"
