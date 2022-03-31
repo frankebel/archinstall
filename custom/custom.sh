@@ -120,3 +120,9 @@ rm /home/"$SUDO_USER"/.bash*
 cp files/suspend@.service /etc/systemd/system/
 systemctl enable "suspend@$SUDO_USER.service"
 sudo -u "$SUDO_USER" systemctl enable --user "/home/$SUDO_USER/.config/systemd/user/mbsync.timer"
+case "$(cat /etc/hostname)" in
+	*"desktop"* )
+		cp files/amdgpu-fan.yml /etc/amdgpu-fan.yml
+		systemctl enable amdgpu-fan.service
+		;;
+esac
