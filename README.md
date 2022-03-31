@@ -2,7 +2,7 @@
 My Script for installing Arch Linux.
 
 ## Base install:
-```bash
+```sh
 loadkeys colemak
 pacman -Sy git
 git clone https://github.com/frankebel/archinstall.git
@@ -11,6 +11,13 @@ cd archinstall
 ```
 
 ## Custom install
+```sh
+git clone https://github.com/frankebel/archinstall.git
+cd archinstall/custom
 ```
-./custom/custom.sh
+
+edit pkglist*.txt to your liking
+
+```sh
+sudo ./custom.sh
 ```
