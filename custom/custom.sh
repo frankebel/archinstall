@@ -77,6 +77,7 @@ case "$yn" in
 		;;
 esac
 
+pacman -S --noconfirm archlinux-keyring
 edit_pacman
 edit_makepkg
 install_pacman

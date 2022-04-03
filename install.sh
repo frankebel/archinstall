@@ -297,10 +297,10 @@ add_user() {
 
 boot_loader() {
 	case "$(lscpu | grep 'Vendor ID')" in
-		*AuthenticAMD )
+		*AuthenticAMD* )
 			microcode='amd-ucode'
 			;;
-		*GenuineIntel )
+		*GenuineIntel* )
 			microcode='intel-ucode'
 			;;
 		* )
