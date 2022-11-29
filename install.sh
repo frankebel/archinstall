@@ -88,6 +88,7 @@ sed -i -E "s/(^username=$)/\1'$username'/" chroot.sh
 sed -i -E "s/(^pass_user=$)/\1'$pass_user'/" chroot.sh
 sed -i -E "s/(^hostname=$)/\1'$hostname'/" chroot.sh
 cp chroot.sh /mnt/root/chroot.sh
+# chroot into system
 arch-chroot /mnt /root/chroot.sh
 shred -u /mnt/root/chroot.sh
 
