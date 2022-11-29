@@ -5,9 +5,6 @@ pandoc-bin
 paru
 python-transmissionrpc
 shellcheck-bin
-ventoy-bin
 via-bin
-vscodium
-wkhtmltopdf
+vscodium-bin
 xidlehook
-zoom
