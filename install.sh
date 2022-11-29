@@ -79,8 +79,17 @@ pacstrap /mnt base linux linux-firmware neovim networkmanager sudo efibootmgr
 
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
-# TODO edit chroot.sh
-# arch-chroot /mnt /root/chroot.sh
+# Create and edit "chroot.sh".
+uuid_crypt="$(lsblk -dno UUID "/dev/$root_partition")"
+sed -i -E "s/(^uuid_crypt=$)/\1'$uuid_crypt'/" chroot.sh
+sed -i -E "s/(^drive=$)/\1'$drive'/" chroot.sh
+sed -i -E "s/(^pass_root=$)/\1'$pass_root'/" chroot.sh
+sed -i -E "s/(^username=$)/\1'$username'/" chroot.sh
+sed -i -E "s/(^pass_user=$)/\1'$pass_user'/" chroot.sh
+sed -i -E "s/(^hostname=$)/\1'$hostname'/" chroot.sh
+cp chroot.sh /mnt/root/chroot.sh
+arch-chroot /mnt /root/chroot.sh
+shred -u /mnt/root/chroot.sh
 
 
 # Reboot
