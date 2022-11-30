@@ -1,129 +1,130 @@
 #!/bin/sh
+# Set up custom installation. Run this script after base installtion is done.
+# Configure "pacman*.txt" and "aur*.txt" for packages to install.
 
 
-edit_pacman() {
-	cp /etc/pacman.conf /etc/pacman.conf.old
-	sed -i '/^#Color/s/^#//' /etc/pacman.conf
-	sed -i '/^#VerbosePkgLists/s/^#//' /etc/pacman.conf
-	sed -i '/^#ParallelDownloads/c\ParallelDownloads = 8' /etc/pacman.conf
-	sed -i '/^ParallelDownloads/a ILoveCandy' /etc/pacman.conf
-	sed -i '/^#\[multilib\]/s/^#//' /etc/pacman.conf
-	sed -i '/^\[multilib\]/{n;s/^#//;}' /etc/pacman.conf
-	pacman -Sy
-}
+# Get hostname
+host="$(hostnamectl hostname)"
 
 
-edit_makepkg() {
-	cp /etc/makepkg.conf /etc/makepkg.conf.old
-	sed -i '/^#MAKEFLAGS/c\MAKEFLAGS="-j8"' /etc/makepkg.conf
-}
+# Package management
 
+# Edit pacman.conf
+sudo sed -i -E 's/^#(Color$)/\1/' /etc/pacman.conf
+sudo sed -i -E 's/^#(VerbosePkgLists$)/\1/' /etc/pacman.conf
+sudo sed -i -E 's/^#(ParallelDownloads).*/\1 = 8/' /etc/pacman.conf
+sudo sed -i '/^ParallelDownloads/aILoveCandy' /etc/pacman.conf
+sudo sed -i -E 's/^#(\[multilib\]$)/\1/' /etc/pacman.conf
+sudo sed -i '/^\[multilib\]$/{n;s/^#//;}' /etc/pacman.conf
+sudo pacman -Syu --noconfirm
 
-edit_grub() {
-	cp /etc/default/grub /etc/default/grub.old
-	sed -i '/^GRUB_DEFAULT/c\GRUB_DEFAULT=saved' /etc/default/grub
-	sed -i '/^GRUB_DEFAULT/a GRUB_SAVEDEFAULT=true' /etc/default/grub
-	sed -i '/^GRUB_TIMEOUT/c\GRUB_TIMEOUT=1' /etc/default/grub
-	grub-mkconfig -o /boot/grub/grub.cfg
-}
+# Edit makepkg.conf
+sudo sed -i -E 's/^#(MAKEFLAGS=).*/\1"-j8"/' /etc/makepkg.conf
 
+# Pacman install
+# shellcheck disable=SC2024
+[ -f pacman.txt ] && sudo pacman -S --needed - < pacman.txt
+case "$host" in
+    *desktop*)
+        # shellcheck disable=SC2024
+        [ -f pacman_desktop.txt ] \
+            && sudo pacman -S --needed - < pacman_desktop.txt
+        ;;
+    *laptop*)
+        # shellcheck disable=SC2024
+        [ -f pacman_laptop.txt ] \
+            && sudo pacman -S --needed - < pacman_laptop.txt
+        ;;
+esac
 
-install_pacman() {
-	if [ "$(grep '#\| ' pkglist.txt)" != '' ]; then
-		printf 'Please remove comments and whitespace from pkglist.txt.\n'
-		exit 1
-	fi
-	pacman -S --needed - < pkglist.txt
-}
-
-
-install_aur() {
-	if [ "$(grep '#\| ' pkglist_aur.txt)" != '' ]; then
-		printf 'Please remove comments and whitespace from pkglist_aur.txt.\n'
-		exit 1
-	fi
-	sudo -u "$SUDO_USER" sh -c 'paru -S --needed - < pkglist_aur.txt'
-}
-
-
-install_pip() {
-	if [ "$(grep '#\| ' pkglist_pip.txt)" != '' ]; then
-		printf 'Please remove comments and whitespace from pkglist_pip.txt.\n'
-		exit 1
-	fi
-	sudo -u "$SUDO_USER" pip install --user -r pkglist_pip.txt
-}
-
-
-install_dotfiles() {
-	gitdir="/home/$SUDO_USER/.dotfiles"
-	wktree="/home/$SUDO_USER"
-	sudo -u "$SUDO_USER" mkdir "$gitdir"
-	sudo -u "$SUDO_USER" git clone --bare https://github.com/frankebel/dotfiles.git "$gitdir"
-	sudo -u "$SUDO_USER" git --git-dir="$gitdir" --work-tree="$wktree" checkout --force
-	sudo -u "$SUDO_USER" git --git-dir="$gitdir" --work-tree="$wktree" config status.showUntrackedFiles no
-}
-
-
-# main part starts here
-# warning
-printf "\e[1;31mDo not execute this script without knowing what it does.\e[0m Continue? [y/N] "
-read -r yn
-case "$yn" in
-	[yY]* )
+# AUR install with paru
+if ! [ -x /usr/bin/paru ]; then
+    git clone https://aur.archlinux.org/paru.git
+    cd paru || exit
+    makepkg -si --noconfirm
+    cd .. || exit
+    rm -rf paru
+fi
+[ -f aur.txt ] && paru -S --needed - < aur.txt
+case "$host" in
+    *desktop*)
+        [ -f aur_desktop.txt ] && paru -S --needed - < aur_desktop.txt
 		;;
-	* )
-		exit 0
+    *laptop*)
+        [ -f aur_laptop.txt ] && paru -S --needed - < aur_laptop.txt
+        ;;
+esac
+
+
+# User and group management
+sudo usermod -s /bin/zsh "$USER"
+sudo usermod -aG libvirt "$USER"
+
+
+# Set up dotfiles
+
+# Create directories
+# Dummy directories are created for stow to symlink at the right depth.
+mkdir -p ~/.config/dummy
+mkdir -p ~/.local/bin/dummy
+mkdir -p ~/.local/share/applications/dummy
+mkdir -p ~/.local/share/gnupg/dummy
+mkdir -p ~/.local/share/isync/mailbox
+mkdir -p ~/.local/share/isync/tuw
+mkdir -p ~/.ssh/dummy
+chmod 700 ~/.local/share/gnupg
+chmod 700 ~/.ssh
+
+# Clone repo and run stow
+git clone https://github.com/frankebel/dotfiles.git ~/.dotfiles
+git -C ~/.dotfiles remote set-url origin git@github.com:frankebel/dotfiles.git
+# Why does "~" instead of "$HOME" cause errors in stow command?
+stow home --dir="$HOME/.dotfiles" --target="$HOME" home
+case "$host" in
+    *laptop*)
+        stow home --dir="$HOME/.dotfiles" --target="$HOME" laptop
+        ;;
+esac
+
+# Remove dummy directories.
+rmdir ~/.config/dummy
+rmdir ~/.local/bin/dummy
+rmdir ~/.local/share/applications/dummy
+rmdir ~/.local/share/gnupg/dummy
+rmdir ~/.ssh/dummy
+
+
+# Themes
+git clone https://github.com/dracula/gtk.git ~/.themes/Dracula
+
+
+# Remove bash files
+rm ~/.bash*
+
+
+# System files
+
+# zsh
+sudo cp files/zshenv /etc/zsh/zshenv
+
+# systemd
+sudo timedatectl set-ntp true
+sudo cp files/suspend@.service /etc/systemd/system/
+sudo systemctl enable "suspend@$USER.service"
+# user
+systemctl enable --user mailsync.timer
+systemctl enable --user newsboat.timer
+systemctl enable --user ssh-agent.service
+
+# Device specific setup
+case "$host" in
+    *desktop*)
+        # amdgpu-fan
+		sudo cp files/amdgpu-fan.yml /etc/amdgpu-fan.yml
+		sudo systemctl enable amdgpu-fan.service
 		;;
 esac
 
-pacman -S --noconfirm archlinux-keyring
-edit_pacman
-edit_makepkg
-install_pacman
 
-# install aur helper paru
-sudo -u "$SUDO_USER" git clone https://aur.archlinux.org/paru.git
-cd paru || exit
-sudo -u "$SUDO_USER" makepkg -si
-cd .. || exit
-rm -rf paru
-
-install_aur
-install_pip
-
-install_dotfiles
-
-# user and group management
-usermod -aG lp video "$SUDO_USER" # video group for light package
-usermod -s /bin/zsh "$SUDO_USER"
-
-# create directories
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/Data"
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/Temp/Torrents"
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.cache/zsh"
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/gnupg"
-chmod 700 "/home/$SUDO_USER/.local/share/gnupg"
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/pass"
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/isync/mailbox"
-sudo -u "$SUDO_USER" mkdir -p "/home/$SUDO_USER/.local/share/isync/tuw"
-
-# themes
-sudo -u "$SUDO_USER" git clone https://github.com/dracula/gtk.git "/home/$SUDO_USER/.themes/Dracula"
-
-# configure and regenerate grub
-edit_grub
-
-# remove bash files
-rm /home/"$SUDO_USER"/.bash*
-
-# systemd units
-cp files/suspend@.service /etc/systemd/system/
-systemctl enable "suspend@$SUDO_USER.service"
-sudo -u "$SUDO_USER" systemctl enable --user "/home/$SUDO_USER/.config/systemd/user/mbsync.timer"
-case "$(cat /etc/hostname)" in
-	*"desktop"* )
-		cp files/amdgpu-fan.yml /etc/amdgpu-fan.yml
-		systemctl enable amdgpu-fan.service
-		;;
-esac
+# Finalize
+printf '\033[1mCustom installation is done. Please reboot.\n'
