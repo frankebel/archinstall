@@ -16,7 +16,6 @@ hostname=
 # Time zone
 ln -sf /usr/share/zoneinfo/Europe/Vienna /etc/localtime
 hwclock --systohc
-timedatectl set-ntp true
 
 # Localization
 sed -i -E 's/^#(en_US.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
