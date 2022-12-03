@@ -19,7 +19,7 @@ sudo sed -i '/^\[multilib\]$/{n;s/^#//;}' /etc/pacman.conf
 sudo pacman -Syu --noconfirm
 
 # Edit makepkg.conf
-sudo sed -i -E 's/^#(MAKEFLAGS=).*/\1"-j8"/' /etc/makepkg.conf
+sudo sed -i -E 's/^#(MAKEFLAGS=).*/\1"-j$(nproc)"/' /etc/makepkg.conf
 
 # Pacman install
 # shellcheck disable=SC2024
