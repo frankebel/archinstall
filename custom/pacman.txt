@@ -1,6 +1,5 @@
 alacritty
 alsa-utils
-android-tools
 arandr
 awesome
 base
@@ -59,6 +58,7 @@ python-numpy
 python-pandas
 python-pip
 python-psutil
+python-pynvim
 python-scikit-learn
 qemu-desktop
 qt5ct
@@ -71,7 +71,6 @@ rsync
 starship
 steam
 stow
-sudo
 sxhkd
 syncthing
 system-config-printer

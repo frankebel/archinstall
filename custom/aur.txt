@@ -1,10 +1,9 @@
 brave-bin
-flexget
+firefox-tridactyl-native
 nsxiv
 pandoc-bin
 paru
 python-transmissionrpc
 shellcheck-bin
-via-bin
 vscodium-bin
 xidlehook

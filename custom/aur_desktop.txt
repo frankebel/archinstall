@@ -1,1 +1,3 @@
 amdgpu-fan
+flexget
+via-bin
