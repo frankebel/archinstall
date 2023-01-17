@@ -3,7 +3,7 @@
 # Default value for passphrases is "pass".
 # Default username is "user".
 # Default hostname is "arch".
-# Default swap size is 2 GiB.
+# Default swap size is 8 GiB.
 
 
 # Uncomment lines below and set values manually.
@@ -19,7 +19,7 @@
 # Set default values.
 drive_default="$(lsblk -dno NAME | grep -E '^nvme|^sd|^vd' | head -n 1)"
 drive="${drive:-$drive_default}"
-swap_size="${swap_size:-2}"
+swap_size="${swap_size:-8}"
 pass_luks="${pass_luks:-pass}"
 pass_root="${pass_root:-pass}"
 username="${username:-user}"
