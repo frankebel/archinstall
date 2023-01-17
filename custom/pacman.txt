@@ -40,7 +40,6 @@ noto-fonts-cjk
 noto-fonts-emoji
 noto-fonts-extra
 npm
-obs-studio
 openssh
 pacman-contrib
 pass
@@ -52,13 +51,13 @@ piper
 pipewire
 pipewire-pulse
 pkgstats
+python
 python-matplotlib
 python-matplotlib-inline
 python-numpy
 python-pandas
 python-pip
 python-psutil
-python-pynvim
 python-scikit-learn
 qemu-desktop
 qt5ct
