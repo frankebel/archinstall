@@ -16,7 +16,7 @@ sudo sed -i -E 's/^#(ParallelDownloads).*/\1 = 8/' /etc/pacman.conf
 sudo sed -i '/^ParallelDownloads/aILoveCandy' /etc/pacman.conf
 sudo sed -i -E 's/^#(\[multilib\]$)/\1/' /etc/pacman.conf
 sudo sed -i '/^\[multilib\]$/{n;s/^#//;}' /etc/pacman.conf
-sudo pacman -Syu --noconfirm
+sudo pacman -Syu
 
 # Edit makepkg.conf
 sudo sed -i -E 's/^#(MAKEFLAGS=).*/\1"-j$(nproc)"/' /etc/makepkg.conf
@@ -41,7 +41,7 @@ esac
 if ! [ -x /usr/bin/paru ]; then
     git clone https://aur.archlinux.org/paru.git
     cd paru || exit
-    makepkg -si --noconfirm
+    makepkg -si
     cd .. || exit
     rm -rf paru
 fi
