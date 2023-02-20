@@ -1,6 +1,5 @@
 brave-bin
 firefox-tridactyl-native
-nsxiv
 pandoc-bin
 paru
 python-transmissionrpc

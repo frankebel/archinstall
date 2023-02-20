@@ -7,6 +7,7 @@ base-devel
 bat
 cups
 dunst
+easyeffects
 efibootmgr
 fd
 firefox
@@ -67,6 +68,7 @@ rsync
 starship
 steam
 stow
+sxiv
 syncthing
 system-config-printer
 texlive-most
@@ -74,6 +76,7 @@ thunderbird
 tldr
 torbrowser-launcher
 transmission-cli
+trash-cli
 udiskie
 unzip
 urlscan
