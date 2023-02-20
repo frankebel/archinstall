@@ -6,7 +6,6 @@ base
 base-devel
 bat
 cups
-discord
 dunst
 efibootmgr
 fd
@@ -15,12 +14,10 @@ flameshot
 fzf
 gimp
 git
-gnome-keyring
 hplip
 htop
 i3lock
 isync
-jdk-openjdk
 libreoffice-fresh
 linux
 linux-firmware
@@ -70,7 +67,6 @@ rsync
 starship
 steam
 stow
-sxhkd
 syncthing
 system-config-printer
 texlive-most
