@@ -119,5 +119,8 @@ case "$host" in
         ;;
 esac
 
+# virt-manager
+sudo patch /etc/libvirt/libvirtd.conf files/libvirtd.diff
+
 # Finalize
 printf '\033[1mCustom installation is done. Please reboot.\n'
