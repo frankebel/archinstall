@@ -29,8 +29,7 @@ hostname="${hostname:-arch}"
 [ -f chroot.sh ] || exit 1
 
 # Pre-installation
-
-[ -d /sys/firmware/efi/efivars ] || exit 1
+[ -d /sys/firmware/efi/efivars ] || exit
 
 # Partition the disks
 fdisk "/dev/$drive" << FDISK_CMDS
@@ -69,7 +68,7 @@ if [ "$swap_size" -gt 0 ]; then
 fi
 
 # Installation
-pacstrap /mnt base linux linux-firmware base-devel efibootmgr neovim networkmanager
+pacstrap -K /mnt base linux linux-firmware base-devel efibootmgr neovim networkmanager
 
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
