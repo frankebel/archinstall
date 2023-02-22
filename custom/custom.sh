@@ -14,7 +14,7 @@ sudo patch /etc/pacman.conf files/pacman.diff
 sudo pacman -Syu
 
 # Edit makepkg.conf
-sudo sed -i -E 's/^#(MAKEFLAGS=).*/\1"-j$(nproc)"/' /etc/makepkg.conf
+sudo patch /etc/makepkg.conf files/makepkg.diff
 
 # Pacman install
 # shellcheck disable=SC2024
