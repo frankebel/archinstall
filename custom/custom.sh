@@ -2,10 +2,8 @@
 # Set up custom installation. Run this script after base installtion is done.
 # Configure "pacman*.txt" and "aur*.txt" for packages to install.
 
-
 # Get hostname
 host="$(hostnamectl hostname)"
-
 
 # Package management
 
@@ -44,17 +42,15 @@ fi
 case "$host" in
     *desktop*)
         [ -f aur_desktop.txt ] && paru -S --needed - < aur_desktop.txt
-		;;
+        ;;
     *laptop*)
         [ -f aur_laptop.txt ] && paru -S --needed - < aur_laptop.txt
         ;;
 esac
 
-
 # User and group management
 sudo usermod -s /bin/zsh "$USER"
 sudo usermod -aG libvirt "$USER"
-
 
 # Set up dotfiles
 
@@ -88,14 +84,11 @@ rmdir ~/.local/share/applications/dummy
 rmdir ~/.local/share/gnupg/dummy
 rmdir ~/.ssh/dummy
 
-
 # Themes
 git clone https://github.com/dracula/gtk.git ~/.themes/Dracula
 
-
 # Remove bash files
 rm ~/.bash*
-
 
 # System files
 
@@ -115,11 +108,10 @@ systemctl enable --user ssh-agent.service
 case "$host" in
     *desktop*)
         # amdgpu-fan
-		sudo cp files/amdgpu-fan.yml /etc/amdgpu-fan.yml
-		sudo systemctl enable amdgpu-fan.service
-		;;
+        sudo cp files/amdgpu-fan.yml /etc/amdgpu-fan.yml
+        sudo systemctl enable amdgpu-fan.service
+        ;;
 esac
-
 
 # Finalize
 printf '\033[1mCustom installation is done. Please reboot.\n'
