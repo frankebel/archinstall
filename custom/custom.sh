@@ -88,9 +88,6 @@ rmdir ~/.local/share/applications/dummy
 rmdir ~/.local/share/gnupg/dummy
 rmdir ~/.ssh/dummy
 
-# Themes
-git clone https://github.com/dracula/gtk.git ~/.themes/Dracula
-
 # Remove bash files
 rm ~/.bash*
 
