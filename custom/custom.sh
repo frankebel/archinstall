@@ -10,12 +10,7 @@ host="$(hostnamectl hostname)"
 # Package management
 
 # Edit pacman.conf
-sudo sed -i -E 's/^#(Color$)/\1/' /etc/pacman.conf
-sudo sed -i -E 's/^#(VerbosePkgLists$)/\1/' /etc/pacman.conf
-sudo sed -i -E 's/^#(ParallelDownloads).*/\1 = 8/' /etc/pacman.conf
-sudo sed -i '/^ParallelDownloads/aILoveCandy' /etc/pacman.conf
-sudo sed -i -E 's/^#(\[multilib\]$)/\1/' /etc/pacman.conf
-sudo sed -i '/^\[multilib\]$/{n;s/^#//;}' /etc/pacman.conf
+sudo patch /etc/pacman.conf files/pacman.diff
 sudo pacman -Syu
 
 # Edit makepkg.conf
