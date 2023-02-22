@@ -1,6 +1,6 @@
 #!/bin/sh
-# Set up custom installation. Run this script after base installtion is done.
-# Configure "pacman*.txt" and "aur*.txt" for packages to install.
+# Set up custom installation. Run this script after base installation is done.
+# Configure packages/*.txt for packages to install.
 
 # Get hostname
 host="$(hostnamectl hostname)"
@@ -15,6 +15,7 @@ sudo pacman -Syu
 sudo patch /etc/makepkg.conf files/makepkg.diff
 
 # Pacman install
+cd packages || exit
 # shellcheck disable=SC2024
 [ -f pacman.txt ] && sudo pacman -S --needed - < pacman.txt
 case "$host" in
@@ -29,8 +30,10 @@ case "$host" in
             && sudo pacman -S --needed - < pacman_laptop.txt
         ;;
 esac
+cd ..
 
 # AUR install with paru
+cd packages || exit
 if ! [ -x /usr/bin/paru ]; then
     git clone https://aur.archlinux.org/paru.git
     cd paru || exit
@@ -47,6 +50,7 @@ case "$host" in
         [ -f aur_laptop.txt ] && paru -S --needed - < aur_laptop.txt
         ;;
 esac
+cd ..
 
 # User and group management
 sudo usermod -s /bin/zsh "$USER"
