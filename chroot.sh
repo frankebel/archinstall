@@ -1,7 +1,6 @@
 #!/bin/sh
 # Script to run inside chroot environment.
 
-
 # Values are set by "install.sh". Do not edit yourself!
 uuid_crypt=
 drive=
@@ -9,7 +8,6 @@ pass_root=
 username=
 pass_user=
 hostname=
-
 
 # Configure the system
 
