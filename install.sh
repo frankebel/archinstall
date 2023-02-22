@@ -74,8 +74,7 @@ fi
 
 
 # Installation
-pacstrap /mnt base linux linux-firmware neovim networkmanager sudo efibootmgr
-
+pacstrap /mnt base linux linux-firmware base-devel efibootmgr neovim networkmanager
 
 # Configure the system
 genfstab -U /mnt >> /mnt/etc/fstab
