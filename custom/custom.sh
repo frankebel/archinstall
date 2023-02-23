@@ -106,6 +106,7 @@ systemctl enable --user mailsync.timer
 systemctl enable --user newsboat.timer
 systemctl enable --user ssh-agent.service
 systemctl enable --user suspend.target
+systemctl enable --user syncthing.service
 systemctl enable --user trash-empty.timer
 # Device specific setup
 case "$host" in
