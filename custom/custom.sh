@@ -66,6 +66,8 @@ mkdir -p ~/.local/share/applications/dummy
 mkdir -p ~/.local/share/gnupg/dummy
 mkdir -p ~/.local/share/isync/mailbox
 mkdir -p ~/.local/share/isync/tuw
+mkdir -p ~/.local/share/torrents
+mkdir -p ~/.local/state/temp
 mkdir -p ~/.ssh/dummy
 chmod 700 ~/.local/share/gnupg
 chmod 700 ~/.ssh
