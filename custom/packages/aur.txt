@@ -1,4 +1,3 @@
-brave-bin
 dracula-gtk-theme
 firefox-tridactyl-native
 pandoc-bin

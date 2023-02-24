@@ -5,6 +5,7 @@ awesome
 base
 base-devel
 bat
+chromium
 cups
 dunst
 easyeffects
@@ -77,6 +78,7 @@ tldr
 torbrowser-launcher
 transmission-cli
 trash-cli
+ttf-firacode-nerd
 udiskie
 unzip
 urlscan
