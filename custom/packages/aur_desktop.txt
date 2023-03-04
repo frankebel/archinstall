@@ -1,4 +1,3 @@
 amdgpu-fan
 flexget
 nodejs-hueadm
-via-bin
