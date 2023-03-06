@@ -52,13 +52,6 @@ pipewire
 pipewire-pulse
 pkgstats
 python
-python-matplotlib
-python-matplotlib-inline
-python-numpy
-python-pandas
-python-pip
-python-psutil
-python-scikit-learn
 qemu-desktop
 qt5ct
 redshift
