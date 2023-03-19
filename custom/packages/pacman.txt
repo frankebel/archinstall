@@ -1,7 +1,6 @@
 alacritty
 alsa-utils
 arandr
-awesome
 base
 base-devel
 bat
