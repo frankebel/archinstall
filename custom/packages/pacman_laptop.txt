@@ -1,5 +1,4 @@
 blueman
 bluez
 bluez-utils
-xf86-video-intel
-xorg-xbacklight
+brightnessctl

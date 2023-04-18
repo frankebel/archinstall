@@ -100,14 +100,11 @@ sudo cp files/zshenv /etc/zsh/zshenv
 
 # systemd
 sudo timedatectl set-ntp true
-sudo cp files/suspend@.service /etc/systemd/system/
-sudo systemctl enable "suspend@$USER.service"
 # user
 systemctl enable --user huewarm.timer
 systemctl enable --user mailsync.timer
 systemctl enable --user newsboat.timer
 systemctl enable --user ssh-agent.service
-systemctl enable --user suspend.target
 systemctl enable --user syncthing.service
 systemctl enable --user trash-empty.timer
 # Device specific setup
