@@ -17,6 +17,7 @@ hwclock --systohc
 
 # Localization
 sed -i -E 's/^#(en_US.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
+sed -i -E 's/^#(en_GB.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
 locale-gen
 printf 'LANG=en_US.UTF-8\n' > /etc/locale.conf
 printf 'KEYMAP=colemak\n' > /etc/vconsole.conf
