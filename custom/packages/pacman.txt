@@ -1,4 +1,3 @@
-alacritty
 alsa-utils
 base
 base-devel
@@ -8,12 +7,14 @@ cups
 dunst
 easyeffects
 efibootmgr
+exfatprogs
 fd
 firefox
 fzf
 gammastep
 gimp
 git
+git-delta
 grim
 hplip
 htop
@@ -40,12 +41,12 @@ noto-fonts-cjk
 noto-fonts-emoji
 noto-fonts-extra
 npm
+obs-studio
 openssh
 pacman-contrib
 pass
 pass-otp
 pavucontrol
-pcmanfm-gtk3
 perl-rename
 piper
 pipewire
@@ -53,6 +54,7 @@ pipewire-pulse
 pkgstats
 python
 qemu-desktop
+qmk
 qt5ct
 reflector
 ripgrep
@@ -72,11 +74,13 @@ tldr
 torbrowser-launcher
 transmission-cli
 trash-cli
+ttf-fira-code
 ttf-firacode-nerd
 udiskie
 unzip
 urlscan
 virt-manager
+wezterm
 wget
 wl-clipboard
 wofi
