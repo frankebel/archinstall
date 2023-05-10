@@ -52,6 +52,12 @@ case "$host" in
 esac
 cd ..
 
+# Install virtual environment for flexget
+mkdir -p ~/data/.environments
+python -m venv ~/data/.environments/flexget
+~/data/.environments/flexget/bin/pip install --upgrade pip
+~/data/.environments/flexget/bin/pip install flexget transmission-rpc
+
 # User and group management
 sudo usermod -s /bin/zsh "$USER"
 sudo usermod -aG libvirt "$USER"
