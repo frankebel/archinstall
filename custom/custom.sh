@@ -96,7 +96,7 @@ rm ~/.bash*
 # System files
 
 # zsh
-sudo cp files/zshenv /etc/zsh/zshenv
+sudo cp files/etc/zsh/zshenv /etc/zsh/zshenv
 
 # systemd
 sudo timedatectl set-ntp true
@@ -111,7 +111,7 @@ systemctl enable --user trash-empty.timer
 case "$host" in
     *desktop*)
         # amdgpu-fan
-        sudo cp files/amdgpu-fan.yml /etc/amdgpu-fan.yml
+        sudo cp files/etc/amdgpu-fan.yml /etc/amdgpu-fan.yml
         sudo systemctl enable amdgpu-fan.service
         ;;
 esac
