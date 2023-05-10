@@ -103,9 +103,8 @@ rmdir ~/.ssh/dummy
 rm ~/.bash*
 
 # System files
-
-# zsh
 sudo cp files/etc/zsh/zshenv /etc/zsh/zshenv
+sudo cp files/etc/sysctl.d/99-sysctl.conf /etc/sysctl.d/99-sysctl.conf
 
 # systemd
 sudo timedatectl set-ntp true
