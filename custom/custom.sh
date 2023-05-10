@@ -59,16 +59,19 @@ sudo usermod -aG libvirt "$USER"
 # Set up dotfiles
 
 # Create directories
+mkdir -p ~/.local/share/isync/mailbox
+mkdir -p ~/.local/share/isync/tuw
+mkdir -p ~/.local/share/torrents
+mkdir -p ~/.local/state/temp
+
 # Dummy directories are created for stow to symlink at the right depth.
 mkdir -p ~/.config/dummy
 mkdir -p ~/.local/bin/dummy
 mkdir -p ~/.local/share/applications/dummy
 mkdir -p ~/.local/share/gnupg/dummy
-mkdir -p ~/.local/share/isync/mailbox
-mkdir -p ~/.local/share/isync/tuw
-mkdir -p ~/.local/share/torrents
-mkdir -p ~/.local/state/temp
 mkdir -p ~/.ssh/dummy
+
+# Set directory permission
 chmod 700 ~/.local/share/gnupg
 chmod 700 ~/.ssh
 
