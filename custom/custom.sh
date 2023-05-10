@@ -100,6 +100,7 @@ sudo cp files/etc/zsh/zshenv /etc/zsh/zshenv
 
 # systemd
 sudo timedatectl set-ntp true
+sudo systemctl enable cups.socket
 # user
 systemctl enable --user huewarm.timer
 systemctl enable --user mailsync.timer
