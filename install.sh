@@ -13,6 +13,7 @@
 # username=""           # Username for regular user.
 # pass_user=""          # Passphrase for regular user.
 # hostname=""           # Hostname of the device.
+# keymap=""             # Keyboard mapping for console.
 
 # Set default values.
 drive_default="$(lsblk -dno NAME | grep -E '^nvme|^sd|^vd' | head -n 1)"
@@ -23,6 +24,7 @@ pass_root="${pass_root:-pass}"
 username="${username:-user}"
 pass_user="${pass_user:-pass}"
 hostname="${hostname:-arch}"
+keymap="${keymap:-us}"
 
 # Main program
 # Assert file existence.
@@ -80,6 +82,7 @@ sed -i -E "s/(^pass_root=$)/\1'$pass_root'/" chroot.sh
 sed -i -E "s/(^username=$)/\1'$username'/" chroot.sh
 sed -i -E "s/(^pass_user=$)/\1'$pass_user'/" chroot.sh
 sed -i -E "s/(^hostname=$)/\1'$hostname'/" chroot.sh
+sed -i -E "s/(^keymap=$)/\1'$keymap'/" chroot.sh
 cp chroot.sh /mnt/root/chroot.sh
 # chroot into system
 arch-chroot /mnt /root/chroot.sh
