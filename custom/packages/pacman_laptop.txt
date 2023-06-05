@@ -2,3 +2,4 @@ blueman
 bluez
 bluez-utils
 brightnessctl
+intel-media-driver
