@@ -1,4 +1,0 @@
-amdgpu-fan
-flexget
-nodejs-hueadm
-python-transmissionrpc
