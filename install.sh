@@ -4,6 +4,7 @@
 # Default username is "user".
 # Default hostname is "arch".
 # Default swap size is 8 GiB.
+# Default keymap is "us".
 
 # Uncomment lines below and set values manually.
 # drive=""              # Drive to install Arch Linux.
@@ -26,11 +27,14 @@ pass_user="${pass_user:-pass}"
 hostname="${hostname:-arch}"
 keymap="${keymap:-us}"
 
-# Main program
 # Assert file existence.
 [ -f chroot.sh ] || exit 1
 
+# Main program following https://wiki.archlinux.org/title/Installation_guide
+
 # Pre-installation
+
+# Verify the boot mode
 [ -d /sys/firmware/efi/efivars ] || exit
 
 # Partition the disks
@@ -70,10 +74,15 @@ if [ "$swap_size" -gt 0 ]; then
 fi
 
 # Installation
+
+# Install essential packages
 pacstrap -K /mnt base linux linux-firmware base-devel efibootmgr neovim networkmanager
 
 # Configure the system
+
+# Fstab
 genfstab -U /mnt >> /mnt/etc/fstab
+
 # Create and edit "chroot.sh".
 uuid_crypt="$(lsblk -dno UUID "/dev/$root_partition")"
 sed -i -E "s/(^uuid_crypt=$)/\1'$uuid_crypt'/" chroot.sh
@@ -84,7 +93,7 @@ sed -i -E "s/(^pass_user=$)/\1'$pass_user'/" chroot.sh
 sed -i -E "s/(^hostname=$)/\1'$hostname'/" chroot.sh
 sed -i -E "s/(^keymap=$)/\1'$keymap'/" chroot.sh
 cp chroot.sh /mnt/root/chroot.sh
-# chroot into system
+# Chroot
 arch-chroot /mnt /root/chroot.sh
 shred -u /mnt/root/chroot.sh
 
