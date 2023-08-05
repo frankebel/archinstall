@@ -1,20 +1,15 @@
 #!/bin/sh
 # Script to install Arch Linux.
-# Default value for passphrases is "pass".
-# Default username is "user".
-# Default hostname is "arch".
-# Default swap size is 8 GiB.
-# Default keymap is "us".
 
 # Uncomment lines below and set values manually.
-# drive=""              # Drive to install Arch Linux.
-# swap_size=""          # Swap size in GiB. Set 0 for none.
-# pass_luks=""          # Passphrase for luks.
-# pass_root=""          # Passphrase for root user.
-# username=""           # Username for regular user.
-# pass_user=""          # Passphrase for regular user.
-# hostname=""           # Hostname of the device.
-# keymap=""             # Keyboard mapping for console.
+# drive=""              # Drive to install Arch Linux. (default first drive)
+# swap_size=""          # Swap size in GiB. Set 0 for none. (default 8)
+# pass_luks=""          # Passphrase for luks. (default pass)
+# pass_root=""          # Passphrase for root user. (default pass)
+# username=""           # Username for regular user. (default user)
+# pass_user=""          # Passphrase for regular user. (default pass)
+# hostname=""           # Hostname of the device. (default arch)
+# keymap=""             # Keyboard mapping for console. (default us)
 
 # Set default values.
 drive_default="$(lsblk -dno NAME | grep -E '^nvme|^sd|^vd' | head -n 1)"
