@@ -31,7 +31,7 @@ systemctl enable NetworkManager.service
 # See https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_mkinitcpio
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.old
 sed -i '/^HOOKS/s/udev/systemd/' /etc/mkinitcpio.conf
-sed -i '/^HOOKS/s/keymap/sd-vconsole/' /etc/mkinitcpio.conf
+sed -i '/^HOOKS/s/keymap consolefont/sd-vconsole/' /etc/mkinitcpio.conf
 sed -i '/^HOOKS/s/block/& sd-encrypt/' /etc/mkinitcpio.conf
 mkinitcpio -P
 

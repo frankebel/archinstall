@@ -58,8 +58,7 @@ mkfs.ext4 /dev/mapper/root
 
 # Mount the file systems
 mount /dev/mapper/root /mnt
-mkdir /mnt/boot
-mount "/dev/$efi_system_partition" /mnt/boot
+mount --mkdir "/dev/$efi_system_partition" /mnt/boot
 # swap
 if [ "$swap_size" -gt 0 ]; then
     dd if=/dev/zero of=/mnt/swapfile bs=1GiB count="$swap_size"
