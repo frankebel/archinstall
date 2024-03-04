@@ -59,4 +59,4 @@ esac
 pacman -S --noconfirm "$microcode"
 # https://wiki.archlinux.org/title/EFISTUB#efibootmgr
 # shellcheck disable=SC1003
-efibootmgr --create --disk "/dev/$drive" --part 1 --label "Arch" --loader /vmlinuz-linux --unicode 'rd.luks.name='"$uuid_crypt"'=root root=/dev/mapper/root rd.luks.options=password-echo=no rw initrd=\'"$microcode"'.img initrd=\initramfs-linux.img quiet'
+efibootmgr --create --disk "/dev/$drive" --part 1 --label "Arch" --loader /vmlinuz-linux --unicode 'rd.luks.name='"$uuid_crypt"'=root root=/dev/mapper/root rd.luks.options=password-echo=no rw initrd=\initramfs-linux.img quiet'
