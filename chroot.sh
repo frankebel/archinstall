@@ -27,6 +27,21 @@ printf 'KEYMAP=%s\n' "$keymap" > /etc/vconsole.conf
 printf '%s\n' "$hostname" > /etc/hostname
 systemctl enable NetworkManager.service
 
+# Boot loader
+case "$(lscpu | grep 'Vendor ID')" in
+    *AuthenticAMD*)
+        microcode='amd-ucode'
+        ;;
+    *GenuineIntel*)
+        microcode='intel-ucode'
+        ;;
+    *)
+        printf 'Could not find microcode for processor. Aborting script.\n'
+        exit 1
+        ;;
+esac
+pacman -S --noconfirm "$microcode"
+
 # Initramfs
 # See https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Configuring_mkinitcpio
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.old
@@ -43,20 +58,6 @@ useradd -m -G wheel "$username"
 printf '%s:%s' "$username" "$pass_user" | chpasswd
 sed -i -E 's/^#\s*(%wheel ALL=\(ALL:ALL\) ALL$)/\1/' /etc/sudoers
 
-# Boot loader
-case "$(lscpu | grep 'Vendor ID')" in
-    *AuthenticAMD*)
-        microcode='amd-ucode'
-        ;;
-    *GenuineIntel*)
-        microcode='intel-ucode'
-        ;;
-    *)
-        printf 'Could not find microcode for processor. Aborting script.\n'
-        exit 1
-        ;;
-esac
-pacman -S --noconfirm "$microcode"
 # https://wiki.archlinux.org/title/EFISTUB#efibootmgr
 # shellcheck disable=SC1003
 efibootmgr --create --disk "/dev/$drive" --part 1 --label "Arch" --loader /vmlinuz-linux --unicode 'rd.luks.name='"$uuid_crypt"'=root root=/dev/mapper/root rd.luks.options=password-echo=no rw initrd=\initramfs-linux.img quiet'
