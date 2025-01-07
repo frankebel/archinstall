@@ -2,8 +2,9 @@
 # Script to run inside chroot environment.
 
 # Values are set by "install.sh". Do not edit yourself!
-uuid_crypt=
 drive=
+encrypt_root=
+uuid_root=
 pass_root=
 username=
 pass_user=
@@ -59,5 +60,19 @@ printf '%s:%s' "$username" "$pass_user" | chpasswd
 sed -i -E 's/^#\s*(%wheel ALL=\(ALL:ALL\) ALL$)/\1/' /etc/sudoers
 
 # https://wiki.archlinux.org/title/EFISTUB#efibootmgr
-# shellcheck disable=SC1003
-efibootmgr --create --disk "/dev/$drive" --part 1 --label "Arch" --loader /vmlinuz-linux --unicode 'rd.luks.name='"$uuid_crypt"'=root root=/dev/mapper/root rd.luks.options=password-echo=no rw initrd=\initramfs-linux.img quiet'
+# extra CLI arguments
+if [ "$encrypt_root" = "true" ]; then
+    unicode="rd.luks.name=$uuid_root=root root=/dev/mapper/root rd.luks.options=password-echo=no"
+
+else
+    unicode="root=UUID=$uuid_root"
+fi
+unicode="$unicode rw initrd=\initramfs-linux.img quiet"
+# main command
+efibootmgr \
+    --create \
+    --disk "/dev/$drive" \
+    --part 1 \
+    --label "Arch" \
+    --loader /vmlinuz-linux \
+    --unicode "$unicode"

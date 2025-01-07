@@ -3,18 +3,20 @@
 
 # Uncomment lines below and set values manually.
 # drive=""              # Drive to install Arch Linux. (default first drive)
-# swap_size=""          # Swap size in GiB. Set 0 for none. (default 8)
-# pass_luks=""          # Passphrase for luks. (default pass)
-# pass_root=""          # Passphrase for root user. (default pass)
-# username=""           # Username for regular user. (default user)
-# pass_user=""          # Passphrase for regular user. (default pass)
-# hostname=""           # Hostname of the device. (default arch)
-# keymap=""             # Keyboard mapping for console. (default us)
+# swap_size=""          # Swap size in GiB. Set "0" for none. (default "8")
+# encrypt_root=""       # Encrypt root partition ("true" or "false"). (default "false")
+# pass_luks=""          # Passphrase for LUKS if encryption is "true". (default "pass")
+# pass_root=""          # Passphrase for root user. (default "pass")
+# username=""           # Username for regular user. (default "user")
+# pass_user=""          # Passphrase for regular user. (default "pass")
+# hostname=""           # Hostname of the device. (default "arch")
+# keymap=""             # Keyboard mapping for console. (default "us")
 
 # Set default values.
 drive_default="$(lsblk -dno NAME | grep -E '^nvme|^sd|^vd' | head -n 1)"
 drive="${drive:-$drive_default}"
 swap_size="${swap_size:-8}"
+encrypt_root="${encrypt_root:-false}"
 pass_luks="${pass_luks:-pass}"
 pass_root="${pass_root:-pass}"
 username="${username:-user}"
@@ -51,13 +53,21 @@ efi_system_partition="$(lsblk -rno NAME "/dev/$drive" | grep "$drive.*1")"
 root_partition="$(lsblk -rno NAME "/dev/$drive" | grep "$drive.*2")"
 
 # Format the partitions
-printf '%s' "$pass_luks" | cryptsetup luksFormat --key-file - "/dev/$root_partition"
-printf '%s' "$pass_luks" | cryptsetup open --key-file - "/dev/$root_partition" root
 mkfs.fat -F 32 "/dev/$efi_system_partition"
-mkfs.ext4 /dev/mapper/root
+if [ "$encrypt_root" = "true" ]; then
+    printf '%s' "$pass_luks" | cryptsetup luksFormat --key-file - "/dev/$root_partition"
+    printf '%s' "$pass_luks" | cryptsetup open --key-file - "/dev/$root_partition" root
+    mkfs.ext4 /dev/mapper/root
+else
+    mkfs.ext4 "/dev/$root_partition"
+fi
 
 # Mount the file systems
-mount /dev/mapper/root /mnt
+if [ "$encrypt_root" = "true" ]; then
+    mount /dev/mapper/root /mnt
+else
+    mount "/dev/$root_partition" /mnt
+fi
 mount --mkdir "/dev/$efi_system_partition" /mnt/boot
 # swap
 if [ "$swap_size" -gt 0 ]; then
@@ -78,9 +88,10 @@ pacstrap -K /mnt base linux linux-firmware base-devel efibootmgr neovim networkm
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Create and edit "chroot.sh".
-uuid_crypt="$(lsblk -dno UUID "/dev/$root_partition")"
-sed -i -E "s/(^uuid_crypt=$)/\1'$uuid_crypt'/" chroot.sh
+uuid_root="$(lsblk -dno UUID "/dev/$root_partition")"
 sed -i -E "s/(^drive=$)/\1'$drive'/" chroot.sh
+sed -i -E "s/(^encrypt_root=$)/\1'$encrypt_root'/" chroot.sh
+sed -i -E "s/(^uuid_root=$)/\1'$uuid_root'/" chroot.sh
 sed -i -E "s/(^pass_root=$)/\1'$pass_root'/" chroot.sh
 sed -i -E "s/(^username=$)/\1'$username'/" chroot.sh
 sed -i -E "s/(^pass_user=$)/\1'$pass_user'/" chroot.sh
@@ -94,7 +105,7 @@ shred -u /mnt/root/chroot.sh
 # Reboot
 [ "$swap_size" -gt 0 ] && swapoff /mnt/swapfile
 umount -R /mnt
-cryptsetup close /dev/mapper/root
+[ "$encrypt_root" = "true" ] && cryptsetup close /dev/mapper/root
 
 # Finalize
 printf '\033[1mInstallation is done.\n'
