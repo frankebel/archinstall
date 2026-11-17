@@ -18,10 +18,13 @@ ln -sf /usr/share/zoneinfo/Europe/Vienna /etc/localtime
 hwclock --systohc
 
 # Localization
-sed -i -E 's/^#(en_US.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
-sed -i -E 's/^#(en_GB.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
+# See locale(7) for the categories and locale.conf(5) for the file.
+# en_IE: US English, EUR, A4, metric
+# en_SE: ISO 8601 dates and Monday as first weekday
+sed -i -E 's/^#(en_IE.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
+sed -i -E 's/^#(en_SE.UTF-8 UTF-8\s*$)/\1/' /etc/locale.gen
 locale-gen
-printf 'LANG=en_US.UTF-8\n' > /etc/locale.conf
+printf 'LANG=en_IE.UTF-8\nLC_TIME=en_SE.UTF-8\n' > /etc/locale.conf
 printf 'KEYMAP=%s\n' "$keymap" > /etc/vconsole.conf
 
 # Network configuration
